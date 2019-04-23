@@ -84,3 +84,21 @@ Esta é uma aplicação cliente que pode ser aberta simplesmente dando dois cliq
 Ela necessita que o servidor implementado aqui esteja em execução.
 Tal aplicação cliente usa os recursos de WebSockets nativos dos navegadores modernos,
 sem nenhuma biblioteca externa. 
+
+== Hospedagem da Aplicação em Provedor de Nuvem
+
+Para podermos testar a aplicação remotamente, ela foi hospedada
+no https://heroku.com[Heroku], um provedor de nuvem que fornece serviços que chamamos de Platform as a Service (PaaS). Tal provedor fornece gratuitamente uma plataforma para implantação (deploy) de aplicações, de modo que todo o processo de instalação das ferramentas necessárias para a execução da aplicação é automatizado e não temos que nos preocupar com nada disso.
+Isto inclui a instalação de: 
+
+- ferramentas de execução (máquinas virtuais para Java, Node.js, Python, PHP, etc); 
+- servidores web e de aplicação; 
+- bibliotecas que tais aplicações utilizam.
+
+O Heroku é um serviço fantástico por se integrar com o GitHub.
+Com isto, ele permite que, que fez que enviarmos alterações para um repositório no GitHub (com git push), ele detecta o envio de uma nova versão, baixa o código e implanta a aplicação.
+Se tivermos aplicações em Java e outras linguagens que precisam ser compiladas, ele automatiza todo esse processo.
+
+Como esta aplicação é desenvolvida utilizando Node.js, o Heroku identifica isso pela existência do arquivo package.json e assim criar todo um ambiente de execução de aplicações Node pra gente.
+
+A aplicação está hospedada em https://chatwss.herokuapp.com.
