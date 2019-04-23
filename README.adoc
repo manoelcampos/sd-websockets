@@ -96,8 +96,10 @@ Isto inclui a instalação de:
 - bibliotecas que tais aplicações utilizam.
 
 O Heroku é um serviço fantástico por se integrar com o GitHub.
-Com isto, ele permite que, que fez que enviarmos alterações para um repositório no GitHub (com git push), ele detecta o envio de uma nova versão, baixa o código e implanta a aplicação.
+Ele detecta quando enviamos alterações para um repositório no GitHub (com git push), baixa o código e implanta a aplicação.
 Se tivermos aplicações em Java e outras linguagens que precisam ser compiladas, ele automatiza todo esse processo.
+Obviamente, seu projeto deve estar corretamente configurado, usando ferramentas de gerenciamento de dependências/automação
+de build como Maven e npm (este último que estamos usando aqui).
 
 Como esta aplicação é desenvolvida utilizando Node.js, o Heroku identifica isso pela existência do arquivo package.json e assim criar todo um ambiente de execução de aplicações Node pra gente.
 
