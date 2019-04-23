@@ -42,7 +42,13 @@ O projeto usa o http://nodejs.org:[Node.js] para rodar o servidor e o http://npm
 
 Opcionalmente, pode-se usar o https://nodemon.io:[nodemon] para permitir monitorar alterações no código do servidor e reiniciá-lo automaticamente. Isto facilita muito o desenvolvimento pois não temos que parar o servidor manualmente cada vez que fizermos uma alteração no código.
 
-A seguir é mostrado como instalar tais ferramentas automaticamente no Linux e macOS.
+A seguir é mostrado como instalar tais ferramentas automaticamente no macOS, Linux e Windows.
+
+=== macOS
+
+Para instalar as ferramentas no macOS, pode-se baixar o gerenciador de pacotes homebrew.
+A https://brew.sh[página oficial] mostra logo no topo a única instrução necessária para isto.
+Após instalar o homebrew, basta abrir um terminal no diretório raiz do projeto e executar `make macos`.
 
 === Linux
 
@@ -51,11 +57,16 @@ basta abrir um terminal no diretório raiz do projeto e executar `make linux`.
 No entanto, se ao executar o comando ocorrer erro indicando que o programa make não foi encontrado,
 execute um `sudo apt-get install make`.
 
-=== macOS
+=== Windows
 
-Para instalar as ferramentas no macOS, pode-se baixar o gerenciador de pacotes homebrew.
-A https://brew.sh[página oficial] mostra logo no topo a única instrução necessária para isto.
-Após instalar o homebrew, basta abrir um terminal no diretório raiz do projeto e executar `make macos`.
+Os comandos acima são para Linux e macOS. 
+Se você usa Windows, pode baixar manualmente o http://nodejs.org[Node.js] que os comandos npm descritos anteriormente
+possivelmente vão funcionar sem precisar de configurações adicionais.
+
+Mas se você quiser usar os mesmos comandos Linux da seção anterior
+(e ter disponíveis vários outros comandos existentes em Linux),
+pode baixar o https://docs.microsoft.com/en-us/windows/wsl/install-win10[Windows Subsystem for Linux].
+Depois disso, basta seguir os passos da seção anterior.
 
 === Dependências da aplicação servidora
 
