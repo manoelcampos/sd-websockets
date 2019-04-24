@@ -67,43 +67,42 @@
          *        requer um trabalho adicional para interpretar as mensagens recebidas.
         */
         socket.onmessage = function (evt) {
+            /*Se a mensagem não iniciar com 42, é porque representa
+            uma mensagem de controle do protocolo, não uma mensagem
+            enviada pelo usuário ou notificação de status (enviado para indicar
+            que o usuário está digitando)*/
+            if (evt.data.substring(0, 2) !== "42") {
+                return;
+            }
+            
             /*O atributo data do parâmetro evt contém o conteúdo completo da mensagem
             enviada pelo servidor socket.io.
-            Usando a biblioteca socket.io, a mensagem vem no formato 42["chat msg","texto-da-mensagem"],
+            Usando a biblioteca socket.io, uma mensagem comum
+            (que não seja mensagem de controle) vem no formato 42["chat msg","texto-da-mensagem"],
             onde "chat msg" é o tipo da mensagem especificado no código do servidor,
             e 42 são números de controle definidos pela biblioteca socket.io.
             O texto da mensagem em si vem no final.
             Apesar de tal conteúdo parecer json, pelo fato de ter este número antes dos colchetes,
             tal conteúdo não é um código JSON válido.
-            Por isso, para extrair o texto da mensagem, precisamos usar expressões regulares.
+            Por isso, para extrair o texto da mensagem, primeiro
+            remover os dois primeiros caracteres para tornar o conteúdo um JSON válido
+            e assim conseguirmos acessar os valores dentro dos colchetes como um vetor.
             Toda esta complicação é devida ao fato de o servidor usar a biblioteca socket.io
             e esta página html (cliente) usar o recurso de WebSocket do HTML5 (nativo nos browsers atuais).
-            A variável regex abaixo indica a expressão regular que estamos usando para
-            extrair apenas o texto da mensagem (sem as aspas).
-            Tal código da regex está indicando que queremos procurar dentro do conteúdo da mensagem (evt.data),
-            algo que enteja entre aspas, que tenha uma vírgula antes e um fecha colchetes no final.
-            Isto identifica a parte ,"texto-da-mensagem"] no formato da mensagem do socket.io.
-            Os parânetese na regex indica que queremos extrair apenas o que estiver entre as aspas
-            do conteúdo que estiver no formado indicado pela regex.
-            O resultado desta regex será então um vetor, onde o primeiro elemento contém
-            todo o conteúdo que corresponde com a regex indicada
-            e o segundo elemento contém apenas o conteúdo entre as aspas (o texto da mensagem).
             */
-            const regexTextoMsg = /,"(.*?)"]/;
-            const textoMsg = regexTextoMsg.exec(evt.data)[1];
+            const msg = JSON.parse(evt.data.substring(2));
+            const tipoMsg  = msg[0];
+            const textoMsg = msg[1];
 
-            /*Como o servidor envia dois tipos de mensagem (chat msg e status), precisamos
+            /*Como o servidor envia dois tipos de mensagem ("chat msg" e "status"), precisamos
             identificar qual o tipo de mensagem para exibí-la apropriadamente.
-            Mensagens de status (como "o usuário está digitando") são exibidas em uma div
-            enquanto as mensagens normais (do tipo chat msg) são exibidas em uma lista.
-            A variável regexTipoMsg contém uma expressão regular para conseguir extrair
-            o tipo de dentro da mensagem recebida.
+            Mensagens de "status" (como "o usuário está digitando") são exibidas em uma div
+            enquanto as mensagens normais (do tipo "chat msg") são exibidas em uma lista.
             */
-            const regexTipoMsg = /\["(.+?)"/
-            if(evt.data.match(regexTipoMsg)[1] === "chat msg"){
+            if(tipoMsg === "chat msg"){
                 $("#messages").append($("<li>").text(textoMsg));
             }
-            else if (evt.data.match(regexTipoMsg)[1] === "status") {
+            else if (tipoMsg === "status") {
                 $("#status").html(textoMsg);
             }
         };
@@ -115,10 +114,11 @@
         */
         function enviarMsg(){
             let textoMsg = $("#msg").val();
-            console.log(msg);
 
-            //Envia uma mensagem no formato esperado pelo servidor socket.io,
-            //ou seja 42["tipo-da-mensagem","texto-da-mensagem"]
+            /*
+            Envia uma mensagem no formato esperado pelo servidor socket.io,
+            ou seja 42["tipo-da-mensagem","texto-da-mensagem"] 
+            */
             socket.send("42" + JSON.stringify(["chat msg", textoMsg]));  
             $("#msg").val("");
 

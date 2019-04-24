@@ -19,16 +19,22 @@
  */
 
 /*
-Importa a biblioteca express e automaticamente cria o objeto express que 
+Importa a biblioteca express e automaticamente cria o objeto express (da classe Application) que
 vai permitir programarmos nosso servidor para responder à solicitações
 de acesso às páginas HTML (neste exemplo caso apenas à index.html)
-da nossa aplicação web.*/
+da nossa aplicação web.
+https://expressjs.com/en/4x/api.html
+*/
 const express = require('express')();
 
-/*Cria um servidor HTTP que vai ficar escutando numa porta a ser
+/*
+Cria um servidor HTTP que vai ficar escutando numa porta a ser
 definida logo abaixo.
 Esta biblioteca não precisa ser adicionada como dependência no package.json,
 pois ela é fornecida por padrão com o nodejs.
+Server é uma das várias classes definidas no módulo HTTP,
+que precisamos explicitamente instanciar.
+https://nodejs.org/api/http.html
  */
 const http = require('http').Server(express);
 
@@ -52,6 +58,14 @@ a aplicação localmente ou em um servidor que não
 define a porta a ser usada (ou que define de outra maneira).
 No caso do nome do host é o mesmo processo.*/
 const porta = process.env.PORT || 8000
+
+/**HOST é uma variável de ambiente definida manualmente 
+ * nas configurações da aplicação no heroku,
+ * indicando o domínio que o heroku disponibiliza
+ * para a aplicação.
+ * Se a variável não existir (pois estamos rodando a app localmente
+ * ou em outro provedor), vai usar localhost como host.
+ */
 const host = process.env.HOST || "http://localhost"
 
 /*
@@ -67,7 +81,38 @@ const host = process.env.HOST || "http://localhost"
 http.listen(porta, function(){
     //Se a porta for 80, não precisa exibir na URL pois é padrão
     const portaStr = porta === 80 ? '' :  ':' + porta;
-    console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr);
+    /*HEROKU é uma variável de ambiente definida manualmente 
+    nas configurações da aplicação quando hospedada no Heroku.
+    Com isto, a app pode saber se está rodando no heroku ou não.
+    O heroku não nos permite escolher a porta em que o servidor
+    nodejs vai escutar. Ele escolhe uma porta aleatoriamente
+    e armazena na variável de ambiente process.env.PORT.
+    Apesar de ele usar uma porta diferente da 80,
+    acessamos a aplicação pela porta 80,
+    como em https://chatwss.herokuapp.com.
+    O heroku hospeda aplicações de diferentes clientes (desenvolvedores)
+    em um mesmo servidor. No caso do nodejs, cada aplicação possui seu próprio
+    servidor embutido. É diferente de aplicações como em PHP ou python onde 
+    tem-se um servidor como Apache ou nginx onde instalamos diferentes aplicações
+    nele.
+    No nodejs, se cada app executa no seu próprio servidor,
+    não temos como ter mais de uma app usando a porta 80 na mesma máquina.
+    Assim, o que possivelmente o heroku faz é ter um balanceador de carga
+    que recebe requisições na porta 80 e então, de acordo com o subdominio
+    acessado (como chatwss em herokuapp.com), tal balanceador vai direcionar
+    a requisição para a aplicação que responde por aquele domínio, 
+    na porta escolhida pelo heroku.
+    Assim, apesar de ele escolher uma porta aleatória, tal porta é usada
+    apenas internamente dentro da rede do heroku.
+    Externamente, os usuários acessam a app pela porta 80,
+    logo, não temos problemas com firewalls.
+    Desta forma, abaixo verificamos se a app tá rodando no heroku
+    e assim, não exibimos a porta que está sendo internamente usada,
+    pois para os usuários da app, a porta será 80.
+     */
+    if (process.env.HEROKU)
+        console.log('Servidor iniciado. Abra o navegador em ' + host);
+    else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr);
 });
 
 /*
