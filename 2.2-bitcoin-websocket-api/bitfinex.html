@@ -23,18 +23,18 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <script>
+
         $(() => {
             const ws = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
+
+            const from = 'BTC'
+            const to = 'USD'
             //Mensagem pra solicitar assinatura de cotação do valor do BitCoin em dolar.
             const subscriptionMsg = {
                 event: 'subscribe',
                 channel: 'ticker',
-                from: 'BTC',
-                to: 'USD'
+                symbol: 't' + from + to
             }
-
-            //Campo exibido pela API do bitfinex
-            subscriptionMsg.symbol = 't' + subscriptionMsg.from + subscriptionMsg.to
 
             ws.onerror = function () {
                 console.log("Erro ao tentar comunicação com o servidor.");
@@ -59,16 +59,17 @@
                 if (dados['event'] === 'subscribed') {
                     //Obtém o id do canal da nossa assinatura para podermos exibir mensagens recebidas apenas deste canal
                     channelId = dados.chanId
-                    const str = 'Registrada assinatura de cotação de ' + subscriptionMsg.from + ' para ' + subscriptionMsg.to
+                    const str = 'Registrada assinatura de cotação de ' + from + ' para ' + to
                     console.log(str)
                     $("#status").html(str)                    
                 } else if (dados[0] === channelId && dados[1][6] !== undefined) {
                     /*Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, então imprime os dados da mensagem.
                     O conteúdo da mensagem é descrito no link no início deste arquivo*/
-                    const str = subscriptionMsg.from + ': ' + dados[1][6] + ' ' + subscriptionMsg.to
+                    const str = from + ': ' + dados[1][6] + ' ' + to
                     $("#message").html(str)
                     $('#message').fadeOut(100);
-                    $('#message').fadeIn(100);                    
+                    $('#message').fadeIn(100);      
+                    
                     console.log(str)
                 }
             }
