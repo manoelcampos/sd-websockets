@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cotação de Criptomoedas</title>
+</head>
+<body>
+    <h3>
+    Aplicação que usa a API do serviço <a href="https://docs.bitfinex.com/v2/docs">bitfinex</a> para obter a cotação do BitCoin (e
+    outroas criptomoedas) em tempo real.
+    A aplicação envia um requisição para assinar um canal por onde receberá notificações sempre que o preço da criptomoeda
+    solicitada mudar.
+    </h3>
+
+    <h4>
+        <div id="message"></div>
+    </h4>
+
+    <i><div id="status"></div></i>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script>
+        $(() => {
+            const ws = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
+            //Mensagem pra solicitar assinatura de cotação do valor do BitCoin em dolar.
+            const subscriptionMsg = {
+                event: 'subscribe',
+                channel: 'ticker',
+                from: 'BTC',
+                to: 'USD'
+            }
+
+            //Campo exibido pela API do bitfinex
+            subscriptionMsg.symbol = 't' + subscriptionMsg.from + subscriptionMsg.to
+
+            ws.onerror = function () {
+                console.log("Erro ao tentar comunicação com o servidor.");
+            };
+
+            //Id do canal por onde as notificações de preço da criptomoeda serão entregues
+            let channelId = 0
+
+            /**
+             * Registra um listener para indicar que, sempre
+             * que uma mensagem for recebida pela conexão de websocket,
+             * deve-se verificar o tipo da mensagem e extrair algum
+             * informação dela.
+            */
+            ws.onmessage = (msg) => {
+                //Se o conteúdo da mensagem for String, tal comando converte para JSON,
+                //ou seja, para um objeto javascript que poderemos acessar os campos facilmente.
+                const dados = msg.data = JSON.parse(msg.data)
+
+                /*Se o tipo do evento for 'subscribed', que a assinatura no canal para receber 
+                cotação de uma determinada criptomoeda foi aceita*/
+                if (dados['event'] === 'subscribed') {
+                    //Obtém o id do canal da nossa assinatura para podermos exibir mensagens recebidas apenas deste canal
+                    channelId = dados.chanId
+                    const str = 'Registrada assinatura de cotação de ' + subscriptionMsg.from + ' para ' + subscriptionMsg.to
+                    console.log(str)
+                    $("#status").html(str)                    
+                } else if (dados[0] === channelId) {
+                    /*Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, então imprime os dados da mensagem.
+                    O conteúdo da mensagem é descrito no link no início deste arquivo*/
+                    const str = subscriptionMsg.from + ': ' + dados[1][6] + ' ' + subscriptionMsg.to
+                    $("#message").html(str)
+                    $('#message').fadeOut(100);
+                    $('#message').fadeIn(100);                    
+                    console.log(str)
+                }
+            }
+
+            //Envia solicitação de assinatura para ficar recebendo a cotação de uma criptomoeda em tempo real
+            ws.onopen = () => {
+                console.log('Enviando solicitação de assinatura de cotação de ' + subscriptionMsg.from + ' para '+ subscriptionMsg.to)
+                ws.send(JSON.stringify(subscriptionMsg))
+            }
+        })
+    </script>
+</body>
+</html>

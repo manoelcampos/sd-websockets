@@ -1,3 +1,15 @@
+:source-highlighter: highlightjs
+:numbered:
+
+ifdef::env-github[]
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
 = Aplicação de Mensagens Instantâneas utilizando WebSocket com Node.js
 
 Web chat utilizando http://nodejs.org:[Node.js] no lado da app servidor. Com Node.js podemos então usar JavaScript no lado servidor e no cliente. A aplicação utiliza http://websocket.org[WebSockets (recurso do HTML5)] com a biblioteca http://socket.io para implementar o chat.
@@ -76,7 +88,7 @@ Os pacotes (dependências) que são utilizados pela aplicação servidora são s
 
 === Servidor
 
-Para iniciar o servidor, podemos executar `node index.js`.
+Para iniciar o servidor, podemos executar `node start`.
 Porém, utilizando o nodemon, basta fazer `nodemon` que ele vai procurar um arquivo `index.js` e iniciá-lo automaticamente.
 
 === Cliente
