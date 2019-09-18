@@ -35,7 +35,12 @@ O backend é composto pelos arquivos:
 O frontend é composto apenas pelo arquivo link:bitfinex.html[bitfinex.html]. Ele usa a biblioteca JQuery apenas para facilitar a manipulação dos campos HTML e exibir uma pequena animação quando a cotação da moeda é alterada. Basta dar dois cliques em tal arquivo para abrir o frontend.
 
 Você pode testar o frontend online http://manoelcampos.com/sd-websockets/2.2-bitcoin-websocket-api/bitfinex.html[aqui].
-                    
+
+=== Diferenças dos dois projetos
+
+Observe que apesar de ser usado JavaScript nos dois projetos, o código é levemente diferente.
+A implementação do WebSockets disponível no HTML5 é levemente diferente da implementação da biblioteca https://www.npmjs.com/package/ws[ws] que usamos no Node.js.
+
 == Servidor
 
 === Instalação
