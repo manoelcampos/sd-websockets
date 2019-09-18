@@ -1,0 +1,22 @@
+:source-highlighter: highlightjs
+:numbered:
+
+ifdef::env-github[]
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+= Aplicações de Exemplo utilizando o Protocolo WebSockets
+
+Este repositório link:websocket.pptx[apresenta o protocolo de WebSockets] e fornece alguns projetos de backend e frontend.
+
+- link:2.1-websocket-chat-nodejs[Chat utilizando Node.js]
+- link:2.2-bitcoin-websocket-api[Cotação de criptomoedas em tempo real]
+
+== Material Complementar
+
+Veja o https://github.com/manoelcampos/sd-websockets/wiki[Wiki] para acesso a conteúdo extra como palestras, artigos, etc.
