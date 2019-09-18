@@ -62,7 +62,7 @@
                     const str = 'Registrada assinatura de cotação de ' + subscriptionMsg.from + ' para ' + subscriptionMsg.to
                     console.log(str)
                     $("#status").html(str)                    
-                } else if (dados[0] === channelId) {
+                } else if (dados[0] === channelId && dados[1][6] !== undefined) {
                     /*Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, então imprime os dados da mensagem.
                     O conteúdo da mensagem é descrito no link no início deste arquivo*/
                     const str = subscriptionMsg.from + ': ' + dados[1][6] + ' ' + subscriptionMsg.to

@@ -28,7 +28,7 @@ O backend é composto pelos arquivo:
 - link:package.json[package.json]: representa o arquivo de configuração da aplicação servidora. Ele foi criando por meio de um assistante, digitando-se `npm init` no terminal. As dependências (bibliotecas utilizadas pela aplicação) foram baixadas e salvas em tal arquivo digitando-se `npm install ws`. No entanto, como o `package.json` já está configurado, não é preciso executar estes dois comandos.
 - link:Makefile[Makefile]: arquivo que pode ser executado com o comando `make` no Linux/macOS para instalar as ferramentas necessárias. Ver seção de instalação abaixo. É interessante abrir tal arquivo para descobrir quais comandos estão sendo executados ao realizar o processo de instalação (como descrito a seguir).
 
-O frontend é composto apenas pelo arquivo link:bitfinex.html[bitfinex.html]. Ela usa a biblioteca JQuery apenas para facilitar a manipulação dos campos HTML e exibir uma pequena animação quando a cotação da moeda é alterada. Basta dar dois cliques em tal arquivo para abrir o frontend.
+O frontend é composto apenas pelo arquivo link:bitfinex.html[bitfinex.html]. Ele usa a biblioteca JQuery apenas para facilitar a manipulação dos campos HTML e exibir uma pequena animação quando a cotação da moeda é alterada. Basta dar dois cliques em tal arquivo para abrir o frontend.
                     
 == Servidor
 
