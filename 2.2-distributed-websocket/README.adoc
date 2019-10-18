@@ -71,5 +71,16 @@ Neste caso, devemos ter comportamentos inesperados.
 Foi utilizado um arquivo apenas para tornar o projeto o mais simples possível.
 Este é um problema de concorrência que já foi https://manoelcampos.gitbooks.io/sistemas-distribuidos/book/chapter01c-transparency.html[discutido aqui].
 
+O balanceador de carga também está fazendo mais do que deveria: 
+ele rediciona cada cliente para um servidor existente mas também é responsável
+por intermediar a troca de mensagens privadas entre clientes do mesmo servidor ou
+de servidores distintos.
+Isto vai fazer com que o balanceador de carga fique mais tempo
+ocupado, podendo prejudicar a agilidade na redirecionamento 
+das conexões dos clientes. Isto pode prejudicar a escalabilidade do sistema.
+Em uma aplicação real, o ideal seria ter um servidor específico apenas para encaminhar as mensagens privadas.
+No entanto, sendo este um projeto apenas de exemplo e para não tornar a implementação mais extensa,
+optou-se por incluir tal responsabilidade no balanceador. 
+
 Se desejar ver uma aplicação mais realista que utiliza o https://redis.io[Redis] (um servidor de cache) para armazenar dados temporários compartilhados
 entre as diversas aplicações em execução, acesse https://medium.com/containers-on-aws/scaling-a-realtime-chat-app-on-aws-using-socket-io-redis-and-aws-fargate-4ed63fb1b681[este link].
