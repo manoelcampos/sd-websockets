@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat</title>
+    </head>
+    <body>
+        <div id="servidor"></div>
+        <div id="login"></div>
+        <ul id='messages'></ul>
+        <form>
+            <label id='label1' for"msg">Digite seu login</label>
+            <input type='text' id='msg' autocomplete="off" /> 
+            <button id='button1' type='submit'>Entrar</button>
+        </form>
+        <div id='status'></div>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            $(function(){
+                $('#servidor').html('Servidor: '+window.location);
+                let socket = io();
+                let nickname = '';
+
+                $('form').submit(function(){
+                    $('#label1').html('Digite uma mensagem');
+                    $('#button1').html('Enviar');
+                    
+                    if(nickname === ''){
+                        nickname = $('#msg').val();
+                        socket.emit('login', nickname);
+                        $('#login').html(`Conectado como ${nickname}. Para enviar mensagem privada para um usuário em um determinado servidor, digite <b>login@endereco_servidor_destino:porta mensagem</b>`);
+                    } else {
+                        const msg = $('#msg').val();
+                        socket.emit('chat msg', msg);
+                        $('#messages').append($('<li>').text(msg));
+                    }
+
+                    $('#msg').val('');
+                    return false;
+                });
+
+                socket.on('chat msg', function(msg){
+                    $('#messages').append($('<li>').text(msg));
+                });
+
+                socket.on('status', function(msg){
+                    $('#status').html(msg);
+                    console.log(msg);
+                });
+
+                $('#msg').keypress(function(evt){
+                    if(nickname === ''){
+                        return;
+                    }
+
+                    socket.emit('status', nickname + ' está escrevendo...');
+                });
+
+                $('#msg').keyup(function(evt){
+                    socket.emit('status', '');
+                });
+            })
+        </script>
+    </body>
+</html>

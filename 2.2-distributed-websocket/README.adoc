@@ -1,0 +1,75 @@
+:source-highlighter: highlightjs
+:numbered:
+
+ifdef::env-github[]
+:outfilesuffix: .adoc
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+= Aplicação Distribuída de Mensagens Instantâneas com Balanceador de Carga utilizando WebSocket com Node.js
+
+Esta é uma versão distribuída do chat com WebSockets e Node.js link:../2.1-websocket-chat-nodejs[apresentado anteriormente].
+A aplicação possui um balanceador de carga que decide qual servidor vai atender o usuário. 
+
+Você pode iniciar múltiplos servidores na mesma máquina, onde cada um vai executar em uma porta selecionada aleatoriamente. 
+Ao iniciar cada servidor, o endereço dele é adicionado ao arquivo servidores.json
+
+Os usuários conectados em um mesmo servidor podem mandar mensagens em broadcast entre eles.
+Se um usuário desejar mandar uma mensagem privada para um usuário de um mesmo ou outro servidor, pode digitar `login@endereco_servidor_destino:porta mensagem`. 
+Neste caso, o balanceador de carga (que conhece o endereço de todos os servidores online),
+verificará que a mensagem é privada, localizará o servidor de destino e encaminhará a mensagem a ele. 
+Tal servidor então procura o usuário de destino e entrega a mensagem.
+
+== Informações Adicionais
+
+Informações sobre instalação, estrutura, dependências e outras devem ser consultadas no link:../2.1-websocket-chat-nodejs[projeto anterior].
+
+== Executando a Aplicação
+
+=== Balanceador de Carga e Servidores
+
+Para iniciar o balanceador de carga, podemos executar o comando abaixo, que iniciará o balanceador em http://localhost:8000
+
+[source,bash]
+----
+node balancer.js
+----
+
+NOTE: Sempre antes de iniciar o balanceador, caso não tenha nenhum sevidor em execução, pode apagar o arquivo server.json que ele será criado novamente.
+
+Depois, pode-se abrir quantos terminais desejar e em cada terminal abrir uma instância diferente do servidor da aplicação com o comando: 
+
+[source,bash]
+----
+npm start
+----
+
+Cada servidor vai iniciar em localhost numa porta escolhida aleatoriamente.
+Como a aplicação deve ser acessada sempre pelo balanceador de carga, o usuário não precisa saber o endereço dos servidores.
+
+=== Cliente
+
+Para abrir a interface web da aplicação, basta acessar o endereço do balanceador de carga em http://localhost:8000
+que ele vai direcionar a requisição para um servidor disponível.
+
+== AVISO
+
+Este é apenas um projeto de exemplo, mostrando que não é complexo implementar
+um balanceador de carga e a comunicação entre diferentes servidores usando WebSockets.
+Apesar disto, observe que é bastante trabalhoso implementar algo assim.
+
+Esta implementação serve apenas para efeitos didáticos e posusi alguns problemas.
+Um deles é o uso de um arquivo para armazenar o endereço dos servidores disponíveis.
+Como este arquivo está sendo sobrescrito tanto pelo balanceador de carga quanto pelos
+diversos servidores em execução, é certo que em algum momento uma dessas aplicações
+pode sobrescrever as alterações feitas por outra.
+Neste caso, devemos ter comportamentos inesperados.
+Foi utilizado um arquivo apenas para tornar o projeto o mais simples possível.
+Este é um problema de concorrência que já foi https://manoelcampos.gitbooks.io/sistemas-distribuidos/book/chapter01c-transparency.html[discutido aqui].
+
+Se desejar ver uma aplicação mais realista que utiliza o https://redis.io[Redis] (um servidor de cache) para armazenar dados temporários compartilhados
+entre as diversas aplicações em execução, acesse https://medium.com/containers-on-aws/scaling-a-realtime-chat-app-on-aws-using-socket-io-redis-and-aws-fargate-4ed63fb1b681[este link].
