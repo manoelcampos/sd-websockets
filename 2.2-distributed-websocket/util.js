@@ -4,40 +4,6 @@
 class Util{
     
     /**
-     * Carrega os dados do arquivo de servidores e retorna
-     * um objeto com tais dados.
-     * Tal objeto conterá um atributo para cada servidor existente,
-     * onde o nome do atributo é o endereço do servidor e o valor do atributo
-     * é inicialmente o número de vezes que se tentou conectar no servidor sem sucesso.
-     * Este valor é utilizado para que, depois de uma determinada quantidade de tentativas,
-     * o servidor seja considerado off-line.
-     * São feitas várias tentativas pois o servidor poderia estar apenas
-     * ocupado e não conseguiu responder a tempo.
-     */
-    static loadServersFile(){
-        /*
-        Se o arquivo de servidores não existe, 
-        cria um com um objeto vazio dentro dele e retorna tal objeto vazio.
-        */
-        if (!Util.fs.existsSync(Util.serversFile)) {
-            Util.fs.writeFileSync(Util.serversFile, "{}");
-            return {};
-        }
-
-        return JSON.parse(Util.fs.readFileSync(Util.serversFile));
-    }
-
-    /**
-     * Sava o objeto contendo os endereços dos servidores disponíveis
-     * para um arquivo json.
-     * 
-     * @param {Object} servers Objeto contendo o endereço dos servidores disponíveis
-     */
-    static saveServersFile(servers){
-        Util.fs.writeFileSync(Util.serversFile, JSON.stringify(servers));
-    }
-
-    /**
      * Obtém o endereço do servidor de destino de uma mensagem privada
      * @param {String} msg mensagem no formato login@endereco_servidor_destino:porta mensagem
      * @return o endereço do servidor de destino

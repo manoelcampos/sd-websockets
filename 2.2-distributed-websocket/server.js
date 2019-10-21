@@ -20,8 +20,6 @@ const host  = hasParameters ? process.argv[2] : "localhost";
 const port = hasParameters ? process.argv[3] : util.randomPort();
 const server = `${host}:${port}`;
 
-const servers = util.loadServersFile();
-
 /**
  * Conecta no WebSocket do balanceador de carga para permitir que ele intermedie a comunicação
  * entre servidores quando um usuário enviar uma mensagem para outro em um servidor diferente.
@@ -30,9 +28,9 @@ const loadBalancerSocket = require('socket.io-client')(util.loadBalancerAddress)
 
 /** 
  * Informa ao balanceador o endereço deste servidor para que o balanceador 
- * possa se comunicar com ele via WebSockets e encaminhar mensagens
+ * possa se comunicar com ele via WebSockets e encaminhar mensagens.
  */
-loadBalancerSocket.emit('server', server);
+loadBalancerSocket.emit('serverAddress', server);
 
 /**
  * Objeto contendo os sockets dos usuários conectados neste servidor, que permite 
@@ -70,22 +68,6 @@ function sendMsgToUser(destinationUser, msg){
 
     return false;
 }
-
-/* 
- Adiciona o endereço do próprio servidor como um atributo do objeto que contém os servidores disponíveis.
- Como o servidor está iniciando, armazena zero neste atributo 
- para indicar que ainda não houve falha ao tentar conectar neste servidor.
- Para entender melhor a estrutura de tal objeto,
- veja o arquivo servers.json depois de executar o balanceador de carga e algum servidor.
- */
-servers[`http://${server}`] = 0;
-
-/*
- Salva o objeto com a lista de servidores no arquivo servers.json
- que será lido pelo balanceador de carga. Assim ele saberá quais
- servidores estão disponíveis.
-*/
-util.saveServersFile(servers);
 
 http.listen(port, function(){
     console.log(`Servidor iniciado. Abra a aplicação pelo endereço do balanceador de carga em ${util.loadBalancerAddress}`);

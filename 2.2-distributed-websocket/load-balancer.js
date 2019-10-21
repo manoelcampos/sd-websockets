@@ -14,19 +14,16 @@ const port = util.loadBalancerPort;
  */
 const balancerSocket = require('socket.io')(http);
 
-/** 
- * Endereços dos servidores disponíveis para balancear a carga,
- * carregados a a partir do arquivo servers.json (definido em util.js)
- */
-let servers = [];
-
 /**
  * Objeto contendo os sockets dos servidores disponíves, que permite ao balanceador de carga enviar mensagem a eles.
- * Este objeto contém um atributo cujo nome será o ID do socket do servidor,
- * para cada servidor disponível.
- * Se tivermos 2 sockets com os IDs S9834ASDFLJ e LS0291LAS,
- * então teremos dois atributos cujos nomes são estes IDs e o valor de cada um
+ * Para cada servidor disponível, este objeto conterá um atributo cujo nome será o endereço do servidor.
+ * Se tivermos 2 servidores rodando nos endereços localhost:8001 e localhost:8002,
+ * então teremos dois atributos cujos nomes são estes endereços e o valor de cada um
  * é o socket do servidor respectivo.
+ * 
+ * É utilizado um objeto no lugar de um vetor pois assim, quando precisarmos
+ * de informações sobre um servidor específico, não temos que percorrer o vetor
+ * para localizar tal servidor.
 */
 const serverSockets = {};
 
@@ -41,28 +38,34 @@ http.listen(port, function(){
 });
 
 express.get('/', function (request, response) {
-    servers = util.loadServersFile();
-    if(servers.length == 0){
-        response.status(503).send("<b>Não há nenhum servidor disponível. Por favor tenta mais tarde</b>");
+    /*
+    Obtém a lista de atributos (campos) do objeto serverSockets,
+    onde o nome de cada atributo representa o endereço de um servidor.
+    Assim, o total de atributos representa o total de servidores disponíveis.
+    Como serverSockets não é um vetor, para saber o total de servidores disponíveis
+    temos que verificar o total de atributos (fields) do objeto.
+    */
+    const fields = Object.keys(serverSockets);
+
+    if (fields.length == 0){
+        response.status(503).send("<b>Não há nenhum servidor disponível ainda. Por favor tenta mais tarde!</b>");
         return;
     }
 
-    /*
-    Obtém a lista de atributos (campos) do objeto servers,
-    onde o nome de cada atributo representa o endereço de um servidor.
-    Assim, o total de atributos representa o total de servidores disponíveis.
-    */
-    const fields = Object.keys(servers);
     for(let i = 0; i < fields.length; i++){
-        //Seleciona o próxima servidor da lista (de forma rotativa, se chegar ao final da lista, volta pro início)
+        //Seleciona o próximo servidor da lista (de forma rotativa, se chegar ao final da lista, volta pro início)
         serverIndex = (serverIndex+1) % fields.length;
 
         //Obtém o nome de um atributo, que representa o endereço de um servidor
-        const server = fields[serverIndex];
+        let serverAddress = fields[serverIndex];
+        //Obtém o valor de tal atributo, que representa o socket do servidor
+        const serverSocket = serverSockets[serverAddress];
+        serverAddress = 'http://' + serverAddress;
+        console.log(`Servers: ${fields.length} Selected server: ${serverIndex} serverAddress: ${serverAddress}`);
 
-        if (util.hostAvailable(server)) {
-            console.log(`Redirecionando usuário para servidor ${serverIndex} em ${server}`)
-            response.status(307).redirect(server);
+        if (util.hostAvailable(serverAddress)) {
+            console.log(`Redirecionando usuário para servidor ${serverIndex} em ${serverAddress}`)
+            response.status(307).redirect(serverAddress);
             return;
         } else {
             /* 
@@ -70,13 +73,12 @@ express.get('/', function (request, response) {
             incrementa o número de tentativas e, caso esta tenha excedido
             o máximo permitido, define o servidor como off-line. 
             */
-            if (++servers[server] > maxServerTries){
+            if (++serverSocket.connectionTries > maxServerTries){
                 //Apaga o servidor da lista de servidores disponíveis.
-                delete servers[server];
-                console.log(`Servidor ${server} off-line`);
+                delete serverSockets[serverAddress];
+                console.log(`Servidor ${serverAddress} off-line`);
             }
-            else console.log(`Servidor ${server} não respondeu. Será tentado conectar nele em uma próxima requisição`);
-            util.saveServersFile(servers);
+            else console.log(`Servidor ${serverAddress} não respondeu. Será tentado conectar nele em uma próxima requisição`);
         }
     }
 
@@ -85,28 +87,34 @@ express.get('/', function (request, response) {
 
 /** Monitora quando um servidor conectar no balanceador de carga via WebSocket */
 balancerSocket.on('connect', function (socket) {
-    /* 
-    Quando um servidor conecta ao balanceador de carga via WebSockets,
-    adiciona um novo atributo ao objeto serverSockets, cujo nome de tal atributo é o ID
-    do socket e o valor é o próprio socket de tal servidor.
-    Neste caso, o servidor da aplicação é um cliente do balanceador de carga. 
-    */
-    serverSockets[socket.id] = socket;
-
     /*
     Quando um servidor conecta ao balanceador de carga, ele informa seu endereço 
     para que este seja armazenado e permita ao balanceador direcionar as requisições HTTP
     dos clientes para o endereço de um dos servidores disponíveis.
     */
-    socket.on('server', function (server) {
-        serverSockets[socket.id].server = server;
-        console.log(`Servidor ${server} conectado ao balanceador de carga`);
+    socket.on('serverAddress', function (serverAddress) {
+        /*Adiciona um novo atributo ao objeto serverSockets cujo nome do atributo
+        é o endereço do servidor (como localhost:8001) e o valor do atributo é o socket do 
+        servidor conectado ao balanceador.*/
+        serverSockets[serverAddress] = socket;
+
+        /*Também armazena o endereço do servidor no próprio socket dele para facilitar o acesso,
+        como nos eventos 'disconnect' e 'chat msg' abaixo*/
+        socket.serverAddress = serverAddress;
+
+        /*
+        Número de tentativas de conexão do balanceador com o servidor.
+        Como o servidor acabou de conectar ao balanceador, este último ainda não terá tentado 
+        redirecionar usuários para tal servidor. Por isso o valor inicial é zero. 
+        */
+        serverSockets[serverAddress].connectionTries = 0;
+        console.log(`Servidor ${serverAddress} conectado ao balanceador de carga`);
     });
 
     // Quando um servidor desconectar do balanceador de carga, remove ele da lista de servidores disponíveis.
     socket.on('disconnect', function () {
-        console.log(`Servidor ${serverSockets[socket.id].server} ficou off-line`);
-        delete serverSockets[socket.id];
+        console.log(`Servidor ${socket.serverAddress} ficou off-line`);
+        delete serverSockets[socket.serverAddress];
     });
 
     /*
@@ -115,9 +123,10 @@ balancerSocket.on('connect', function (socket) {
     responsável pelo usuário de destino.
     */
     socket.on('chat msg', function (msg) {
-        const sourceServer = serverSockets[socket.id].server;
+        const sourceServer = socket.serverAddress;
         const destinationServer = util.getDestinationServer(msg);
         console.log(`Msg privada recebida do servidor ${sourceServer} para encaminhamento para ${destinationServer}: ${msg}`);
+
         if(sendMsgToServer(destinationServer, msg))
             console.log(`Mensagem privada encaminhada ao servidor ${sourceServer}: ${msg}`);
         else console.log(`Servidor de destino ${destinationServer} não localizado para encaminhamento da mensagem`);
@@ -125,21 +134,17 @@ balancerSocket.on('connect', function (socket) {
 });
 
 /**
- * Percorre a lista de servidores conectados ao balanceador de carga
- * e verifica a qual deles uma mensagem privada está direcionada.
- * Ao encontrar o servidor de destino, encaminha a mensagem a ele.
+ * Tenta enviar encaminhar a um servidor para entrega a um usuário específico.
  * @param {String} destinationServer endereço do servidor de destino
  * @param {String} msg mensagem a ser encaminhada
  * @return true se o servidor foi encontrado, false caso contrário
  */
 function sendMsgToServer(destinationServer, msg){
-    //Percorre os atributos do objeto serverSockets, que representam os ID do socket de cada servidor conectado.
-    for (socketId in serverSockets){
-        //Se encontrou o servidor de destino, encaminha a mensagem a ele.
-        if(serverSockets[socketId].server === destinationServer){
-            serverSockets[socketId].emit('chat msg', msg)
-            return true;
-        }
+    const serverSocket = serverSockets[destinationServer];
+    //Se encontrou o servidor de destino, encaminha a mensagem a ele.
+    if (serverSocket != undefined){
+        serverSockets[destinationServer].emit('chat msg', msg)
+        return true;
     }
 
     return false;

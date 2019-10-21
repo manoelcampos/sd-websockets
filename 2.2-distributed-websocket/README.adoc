@@ -16,7 +16,9 @@ Esta é uma versão distribuída do chat com WebSockets e Node.js link:../2.1-we
 A aplicação possui um balanceador de carga que decide qual servidor vai atender o usuário. 
 
 Você pode iniciar múltiplos servidores na mesma máquina, onde cada um vai executar em uma porta selecionada aleatoriamente. 
-Ao iniciar cada servidor, o endereço dele é adicionado ao arquivo servers.json
+Ao iniciar cada servidor, ele conecta via WebSockets no balanceador de carga e informa seu endereço.
+O balanceador então guarda a lista de endereços dos servidores ativos.
+Quando um servidor é fechado, ele é removida da lista do balanceador.
 
 Os usuários conectados em um mesmo servidor podem mandar mensagens em broadcast entre eles.
 Se um usuário desejar mandar uma mensagem privada para um usuário de um mesmo ou outro servidor, pode digitar `login@endereco_servidor_destino:porta mensagem`. 
@@ -40,10 +42,8 @@ Podemos iniciar o balanceador de carga em http://localhost:8000 com o comando ab
 
 [source,bash]
 ----
-node balancer.js
+node load-balancer.js
 ----
-
-NOTE: Sempre antes de iniciar o balanceador, caso não tenha nenhum sevidor em execução, pode apagar o arquivo servers.json que ele será criado novamente.
 
 Depois, pode-se abrir quantos terminais desejar e em cada terminal iniciar uma instância diferente do servidor da aplicação com o comando: 
 
@@ -67,21 +67,13 @@ um balanceador de carga e a comunicação entre diferentes servidores usando Web
 Apesar disto, observe que é bastante trabalhoso implementar algo assim.
 
 Esta implementação serve apenas para efeitos didáticos e posusi alguns problemas.
-Um deles é o uso de um arquivo para armazenar o endereço dos servidores disponíveis.
-Como este arquivo está sendo sobrescrito tanto pelo balanceador de carga quanto pelos
-diversos servidores em execução, em algum momento uma dessas aplicações
-pode sobrescrever as alterações feitas por outra.
-Neste caso, podemos ter comportamentos inesperados.
-Foi utilizado um arquivo apenas para tornar o projeto o mais simples possível.
-Este é um problema de concorrência que já foi https://manoelcampos.gitbooks.io/sistemas-distribuidos/book/chapter01c-transparency.html[discutido aqui].
+O balanceador de carga está fazendo mais do que deveria, ele: 
 
-O balanceador de carga também está fazendo mais do que deveria: 
-ele redireciona cada cliente para um servidor existente, 
-mas também é responsável por intermediar a troca de mensagens privadas entre clientes 
-do mesmo servidor ou de servidores distintos.
-Isto vai fazer com que o balanceador de carga fique mais tempo ocupado, 
-podendo prejudicar a agilidade no redirecionamento das conexões dos clientes. 
-Isto pode prejudicar a escalabilidade do sistema.
+- redireciona cada cliente para um servidor existente;
+- mas também é responsável por intermediar a troca de mensagens privadas entre clientes do mesmo servidor ou de servidores distintos.
+
+Isto vai fazer com que o balanceador fique mais tempo ocupado, 
+podendo prejudicar a agilidade no redirecionamento das conexões dos clientes, afetando a escalabilidade do sistema.
 Em uma aplicação real, o ideal seria ter um servidor específico apenas para encaminhar as mensagens privadas.
 No entanto, sendo este um projeto apenas de exemplo, e para não tornar a implementação mais extensa,
 optou-se por incluir tal responsabilidade no balanceador. 
