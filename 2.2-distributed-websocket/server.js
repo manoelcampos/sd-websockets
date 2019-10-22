@@ -3,8 +3,8 @@ console.log('\tIniciar um servidor em uma porta aleatória: npm start')
 console.log('\tIniciar um servidor em uma porta específica: npm start ip_ou_domínio porta\n')
 
 const util = require('./util.js');
-const express = require('express')();
-const http = require('http').Server(express);
+const app = require('express')();
+const http = require('http').Server(app);
 
 /**
  * Socket da aplicação servidora, no qual os usuários conectam.
@@ -73,7 +73,7 @@ http.listen(port, function(){
     console.log(`Servidor iniciado. Abra a aplicação pelo endereço do balanceador de carga em ${util.loadBalancerAddress}`);
 });
 
-express.get('/', function (request, response) {
+app.get('/', function (request, response) {
     response.sendFile(__dirname + '/index.html');
 });
 

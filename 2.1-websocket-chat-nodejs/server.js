@@ -25,7 +25,7 @@ de acesso às páginas HTML (neste exemplo caso apenas à index.html)
 da nossa aplicação web.
 https://expressjs.com/en/4x/api.html
 */
-const express = require('express')();
+const app = require('express')();
 
 /*
 Cria um servidor HTTP que vai ficar escutando numa porta a ser
@@ -36,7 +36,7 @@ Server é uma das várias classes definidas no módulo HTTP,
 que precisamos explicitamente instanciar.
 https://nodejs.org/api/http.html
  */
-const http = require('http').Server(express);
+const http = require('http').Server(app);
 
 /*
 Importa a biblioteca socket.io e automaticamente cria um objeto da classe
@@ -144,7 +144,7 @@ http.listen(porta, function(){
  * 
  * Veja detelhes em https://expressjs.com/en/4x/api.html#app.get.method
  */
-express.get('/', function (requisicao, resposta) {
+app.get('/', function (requisicao, resposta) {
     resposta.sendFile(__dirname + '/index.html');
 });
 
