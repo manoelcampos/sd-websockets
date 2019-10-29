@@ -60,11 +60,8 @@ class Util{
     }
 } 
 
-Util.serversFile = 'servers.json';
-
 //Permitie enviar requisições HTTP para verificar se um servidor está online ou não.
 Util.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-Util.fs = require('fs');
 
 /*
 Expressão regular que verifica se uma mensagem está no formato login@endereco_servidor_destino:porta mensagem,

@@ -29,7 +29,7 @@
                     if(nickname === ''){
                         nickname = $('#msg').val();
                         socket.emit('login', nickname);
-                        $('#login').html(`Conectado como ${nickname}. Para enviar mensagem privada para um usuário em um determinado servidor, digite <b>login@endereco_servidor_destino:porta mensagem</b>`);
+                        $('#login').html(`<b>Conectado como ${nickname}</b>. <br/>Para enviar mensagem privada para um usuário em um determinado servidor, digite <b>login@endereco_servidor_destino:porta mensagem</b>`);
                     } else {
                         const msg = $('#msg').val();
                         socket.emit('chat msg', msg);

@@ -80,3 +80,5 @@ optou-se por incluir tal responsabilidade no balanceador.
 
 Se desejar ver uma aplicação mais realista que utiliza o https://redis.io[Redis] (um servidor de cache) para armazenar dados temporários compartilhados
 entre as diversas aplicações em execução, acesse https://medium.com/containers-on-aws/scaling-a-realtime-chat-app-on-aws-using-socket-io-redis-and-aws-fargate-4ed63fb1b681[este link].
+Um vídeo mostrando o desenvolvimento de tal aplicação está disponível link:https://youtu.be/IEvLkwdFgnU[aqui].
+Há legendas em inglês, que você pode traduzir para o português no YouTube.
