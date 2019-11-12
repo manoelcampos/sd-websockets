@@ -8,10 +8,11 @@
 </head>
 <body>
     <h3>
-    Aplicação que usa a API do serviço <a href="https://docs.bitfinex.com/v2/docs">bitfinex</a> para obter a cotação do BitCoin (e
-    outroas criptomoedas) em tempo real.
-    A aplicação envia um requisição para assinar um canal por onde receberá notificações sempre que o preço da criptomoeda
-    solicitada mudar.
+    Aplicação que usa a API do serviço <a href="https://docs.bitfinex.com/v2/docs">bitfinex</a> para obter a cotação do bitcoin (e outras criptomoedas) em tempo real.
+    Ela envia um requisição para assinar um canal por onde receberá notificações sempre que o preço da criptomoeda solicitada mudar.
+    Tal aplicação utiliza apenas os recursos de WebSockets do HTML5 disponibilizados pelo navegador.
+    Assim, ela não depende de uma aplicação servidora para obter a cotação da moeda.
+    A aplicação servidora existente não tem relação alguma com esta página HTML.
     </h3>
 
     <h4>
@@ -52,7 +53,7 @@
             ws.onmessage = (msg) => {
                 //Se o conteúdo da mensagem for String, tal comando converte para JSON,
                 //ou seja, para um objeto javascript que poderemos acessar os campos facilmente.
-                const dados = msg.data = JSON.parse(msg.data)
+                const dados = msg.data = JSON.parse(msg.data)   
 
                 /*Se o tipo do evento for 'subscribed', que a assinatura no canal para receber 
                 cotação de uma determinada criptomoeda foi aceita*/

@@ -46,9 +46,12 @@ ws.onmessage = (msg) => {
     channelId = msg.data.chanId
     console.log('Registrada assinatura de cotação de ' + subscriptionMsg.from + ' para ' + subscriptionMsg.to)
   } else if (msg.data[0] === channelId){
-    /*Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, então imprime os dados da mensagem.
+    /*Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, 
+    então imprime os dados da mensagem.
     O conteúdo da mensagem é descrito no link no início deste arquivo*/
-    console.log(subscriptionMsg.from + ': ' + msg.data[1][6] + ' ' + subscriptionMsg.to)
+    if (msg.data[1][6] !== undefined){
+      console.log(subscriptionMsg.from + ' = ' + subscriptionMsg.to + ' ' + msg.data[1][6])
+    }
   }
 }
 
