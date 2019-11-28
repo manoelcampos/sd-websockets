@@ -10,7 +10,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-= Aplicação Distribuída de Mensagens Instantâneas com Balanceador de Carga utilizando WebSocket com Node.js
+= Aplicação Distribuída de Mensagens Instantâneas com Balanceador de Carga utilizando WebSocket com Node.js (link:https://kinolien.github.io/gitzip/?download=/manoelcampos/sd-websockets/tree/master/2.2-distributed-websocket[zip])
 
 Esta é uma versão distribuída do chat com WebSockets e Node.js link:../2.1-websocket-chat-nodejs[apresentado anteriormente].
 A aplicação possui um balanceador de carga que decide qual servidor vai atender o usuário. 
