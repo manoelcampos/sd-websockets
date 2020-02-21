@@ -88,7 +88,13 @@ Os pacotes (dependências) que são utilizados pela aplicação servidora são s
 
 === Servidor
 
-Para iniciar o servidor, podemos executar `node start`.
+Para iniciar o servidor, podemos executar:
+
+[source, bash]
+----
+npm start
+----
+
 Porém, utilizando o nodemon, basta fazer `nodemon` que ele vai procurar um arquivo `server.js` e iniciá-lo automaticamente.
 
 === Cliente

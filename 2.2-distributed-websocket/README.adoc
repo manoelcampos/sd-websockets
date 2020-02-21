@@ -47,7 +47,7 @@ node load-balancer.js
 
 Depois, pode-se abrir quantos terminais desejar e em cada terminal iniciar uma instância diferente do servidor da aplicação com o comando: 
 
-[source,bash]
+[source, bash]
 ----
 npm start
 ----
