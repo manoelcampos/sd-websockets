@@ -16,7 +16,7 @@ Web chat utilizando http://nodejs.org:[Node.js] no lado da app servidor. Com Nod
 
 A biblioteca socket.io apenas facilita o uso do recurso de WebSocket.
 WebSocket é um protocolo https://pt.wikipedia.org/wiki/Duplex#Full-duplex[full-duplex] leve para transmissão de dados em aplicações web.
-Se tal biblioteca for usanda em uma aplicação web em Node.js, quando é feita uma conexão WebSocket ao servidor, todo o extenso cabeçalho e corpo de uma mensagem HTTP é trafegado pela rede. Depois que a conexão é realizada,
+Se tal biblioteca for usada em uma aplicação web em Node.js, quando é feita uma conexão WebSocket ao servidor, todo o extenso cabeçalho e corpo de uma mensagem HTTP é trafegado pela rede. Depois que a conexão é realizada,
 ela fica estabelecida com o servidor e, a partir daí, somente os dados enviados pela aplicação
 (normalmente digitados pelo usuário) e um pequeno cabeçalho (usualmente de apenas https://tools.ietf.org/html/rfc6455#section-5.2[32 bits]) serão enviados ao servidor.
 
