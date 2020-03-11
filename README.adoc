@@ -10,7 +10,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-= Aplicações de Exemplo utilizando o Protocolo WebSockets
+= Aplicações de Exemplo utilizando o Protocolo WebSockets do HTML 5
 
 Este repositório link:websocket.pptx[apresenta o protocolo de WebSockets] e fornece alguns projetos de backend e frontend.
 
