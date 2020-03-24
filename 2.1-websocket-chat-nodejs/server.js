@@ -45,7 +45,6 @@ alterar os links para tais arquivos em nenhum lugar.
 */
 app.use(express.static("public"))
 
-
 /*
 Cria um servidor HTTP que vai ficar escutando numa porta a ser
 definida logo abaixo.
