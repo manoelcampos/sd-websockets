@@ -18,14 +18,33 @@
  * veja a documentação do Firefox em https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Funções.
  */
 
+// Importa a biblioteca express
+const express = require('express');
+
 /*
-Importa a biblioteca express e automaticamente cria o objeto express (da classe Application) que
-vai permitir programarmos nosso servidor para responder à solicitações
-de acesso às páginas HTML (neste exemplo caso apenas à index.html)
+Usa a biblioteca express para criar uma instância da nossa aplicação,
+que vai permitir programarmos nosso servidor para responder à solicitações
+HTTP de acesso às páginas HTML (neste exemplo caso apenas à index.html)
 da nossa aplicação web.
-https://expressjs.com/en/4x/api.html
+https://expressjs.com/en/4x/api.html */
+const app = express();
+
+/*Todos os arquivos estáticos como CSS e JS
+a serem usados no lado do cliente (que não é o caso do server.js)
+serão disponibilizados publicamente em uma
+pasta "public".
+O arquivo index.html não foi colocado em tal pasta
+pois os clientes não terão acesso a ele diretamente.
+Somente quando acessarem http://localhost:porta/
+é que o servidor retorna o conteúdo de tal arquivo.
+Apesar dos arquivos CSS estarem dentro da pasta public,
+no index.html o endereço não é colocado como /public/estilo.css,
+mas apenas estilo.css.
+Assim, se resolvermos trocar o nome da pasta, não precisamos
+alterar os links para tais arquivos em nenhum lugar.
 */
-const app = require('express')();
+app.use(express.static("public"))
+
 
 /*
 Cria um servidor HTTP que vai ficar escutando numa porta a ser

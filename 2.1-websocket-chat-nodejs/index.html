@@ -2,12 +2,16 @@
 <html>
     <head>
         <title>Chat</title>
+        <link rel="stylesheet" href="estilo.css">
     </head>
     <body>
+        <header>
+            <form>
+                <input autofocus type='text' id='msg' placeholder="Digite uma mensagem" autocomplete="off" /> 
+                <button type='submit'>Enviar</button>
+            </form>
+        </header>
         <ul id='messages'></ul>
-        <form>
-            Digite uma mensagem <input type='text' id='msg' autocomplete="off" /> <button type='submit'>Enviar</button>
-        </form>
         <div id='status'></div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
