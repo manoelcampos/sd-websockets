@@ -19,7 +19,7 @@
  */
 
 // Importa a biblioteca express
-const express = require('express');
+const express = require('express')
 
 /*
 Usa a biblioteca express para criar uma instância da nossa aplicação,
@@ -27,7 +27,7 @@ que vai permitir programarmos nosso servidor para responder à solicitações
 HTTP de acesso às páginas HTML (neste exemplo caso apenas à index.html)
 da nossa aplicação web.
 https://expressjs.com/en/4x/api.html */
-const app = express();
+const app = express()
 
 /*Todos os arquivos estáticos como CSS e JS
 a serem usados no lado do cliente (que não é o caso do server.js)
@@ -54,7 +54,7 @@ Server é uma das várias classes definidas no módulo HTTP,
 que precisamos explicitamente instanciar.
 https://nodejs.org/api/http.html
  */
-const http = require('http').Server(app);
+const http = require('http').Server(app)
 
 /*
 Importa a biblioteca socket.io e automaticamente cria um objeto da classe
@@ -63,7 +63,7 @@ Como o WebSocket trafega dados sobre o protocolo HTTP,
 nosso servidor http então é indicado abaixo como sendo o canal
 a ser utilizado para trafegar os dados do WebSocket.
  */
-const serverSocket = require('socket.io')(http);
+const serverSocket = require('socket.io')(http)
 
 /*Porta na qual o servidor vai ficar aguardando requisições HTTP.
 Usar a porta 80 pode exigir permissões de root no Linux.
@@ -98,7 +98,7 @@ const host = process.env.HOST || "http://localhost"
  */
 http.listen(porta, function(){
     //Se a porta for 80, não precisa exibir na URL pois é padrão
-    const portaStr = porta === 80 ? '' :  ':' + porta;
+    const portaStr = porta === 80 ? '' :  ':' + porta
     /*HEROKU é uma variável de ambiente definida manualmente 
     nas configurações da aplicação quando hospedada no Heroku.
     Com isto, a app pode saber se está rodando no heroku ou não.
@@ -129,9 +129,9 @@ http.listen(porta, function(){
     pois para os usuários da app, a porta será 80.
      */
     if (process.env.HEROKU)
-        console.log('Servidor iniciado. Abra o navegador em ' + host);
-    else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr);
-});
+        console.log('Servidor iniciado. Abra o navegador em ' + host)
+    else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr)
+})
 
 /*
  * A chamada express.get indica que queremos que uma função seja chamada
@@ -163,8 +163,8 @@ http.listen(porta, function(){
  * Veja detelhes em https://expressjs.com/en/4x/api.html#app.get.method
  */
 app.get('/', function (requisicao, resposta) {
-    resposta.sendFile(__dirname + '/index.html');
-});
+    resposta.sendFile(__dirname + '/index.html')
+})
 
 /*
  * A chamada serverSocket.on('connect') indica que queremos que uma determinada função seja executada 
@@ -189,7 +189,19 @@ app.get('/', function (requisicao, resposta) {
  * pode se comunicar com o cliente.
  */
 serverSocket.on('connect', function(socket){
-    console.log('\nCliente conectado: ' + socket.id);
+    
+    /*
+    A chamada socket.on('login') abaixo indica que queremos que uma função anônima seja chamada quando o cliente
+    do socket acima enviar uma mensagem do tipo "login" pra o servidor,
+    indicando que ele logou no sistema.
+    */
+    socket.on('login', function (nickname) {
+        socket.nickname = nickname
+        const msg = nickname + ' conectou'
+        console.log(msg)
+        //Quando um cliente logar, envia mensagem para os outros, indicando isto
+        serverSocket.emit('chat msg', msg)
+    })
 
     /*
     A chamada socket.on('disconnect') abaixo indica que queremos que uma função anônima seja chamada quando o cliente
@@ -198,8 +210,8 @@ serverSocket.on('connect', function(socket){
     Neste caso, uma função anônima será chamada e apenas exibirá uma mensagem no terminal.
     */
     socket.on('disconnect', function(){
-        console.log('Cliente desconectado: ' + socket.id);
-    });
+        console.log('Cliente desconectado: ' + socket.nickname)
+    })
         
     /*
     A chamada socket.on('chat msg') abaixo indica que queremos que uma função anônima seja chamada quando
@@ -219,13 +231,12 @@ serverSocket.on('connect', function(socket){
     A função anônima passada receberá a mensagem (msg) enviada ao servidor.
     */
     socket.on('chat msg', function(msg){
-        console.log('Mensagem: ' + msg);
         /*Usando serverSocket.emit(), encaminhamos a mensagem recebida para todos os clientes conectados,
         incluindo o que enviou a mensagem. 
         Assim, a mensagem aparecerá na lista do emissor também.
         */
-        serverSocket.emit('chat msg', msg);
-    });
+        serverSocket.emit('chat msg', `${socket.nickname} diz: ${msg}`)
+    })
 
     /*
     A chamada socket.on('status') abaixo indica que queremos que uma função anônima seja chamada quando 
@@ -239,10 +250,10 @@ serverSocket.on('connect', function(socket){
     A função anônima passada receberá a mensagem (msg) enviada ao servidor.
      */
     socket.on('status', function(msg){
-        console.log(msg);
+        console.log(msg)
         /*A chamada socket.broadcast.emit() reencaminha a mensagem de status recebida
          para todos os clientes conectados, exceto o emissor da mensagem.*/
-        socket.broadcast.emit('status', msg);
+        socket.broadcast.emit('status', msg)
     })
-});
+})
 

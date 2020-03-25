@@ -23,10 +23,10 @@
             $(function(){
                 /*Instancia um WebSocket, conectando automaticamente no servidor,
                 na porta indicada no index.js.*/
-                const socket = io();
+                const socket = io()
 
                 //Nome do usuário
-                let nickname = '';
+                socket.nickname = ''
 
                 /**
                  * Define uma função a ser chamada sempre que o form for submetido.
@@ -36,18 +36,60 @@
                  * mensagens deste tipo.
                 */
                 $('form').submit(function(){
-                    /*Envia mensagem digitada para o servidor.
-                    O primeiro parâmetro é o tipo da mensagem
-                    que será tratada pelo servidor. */
-                    socket.emit('chat msg', $('#msg').val());
-                    if(nickname === ''){
-                        nickname = $('#msg').val();
+                    if(socket.nickname === ''){
+                        socket.nickname = $('#msg').val()
+                        /*Envia mensagem digitada para o servidor.
+                        O primeiro parâmetro é o tipo da mensagem
+                        que será tratada pelo servidor,
+                        o segundo é o conteúdo da mensagem. */
+                        socket.emit('login', socket.nickname)
+
+                        /**
+                         * Função que será chamada sempre que o servidor
+                         * enviar de volta ao cliente uma mensagem do tipo "status".
+                         * Assim, todos os clientes saberão o status de um determinado usuário.
+                         * Por exemplo, quando um usuário estiver digitando,
+                         * todos os outros receberão uma mensagem de status indicando isto.
+                         */
+                        socket.on('status', function (msg) {
+                            $('#status').html(msg)
+                            console.log(msg)
+                        })
+
+                        /**
+                         * Função que será chamada sempre que o usuário
+                         * digitar uma tecla.
+                         * Ela então envia uma mensagem de status ao servidor,
+                         * indicando que o usuário está digitando.
+                         * O servidor receberá tal mensagem e fará broadcast dela,
+                         * ou seja, enviará para todos os outros clientes
+                         * para que eles saibam que um usuário está digitando.
+                         */
+                        $('#msg').keypress(function (evt) {
+                            if (socket.nickname === '') {
+                                return
+                            }
+
+                            socket.emit('status', socket.nickname + ' está escrevendo...')
+                        })
+
+                        /**
+                         * Função que será chamada quando o usuário soltar uma tecla,
+                         * ou seja, parar de digitar. Ao fazer isso, o cliente
+                         * envia uma mensagem de status vazia. Isto indicará
+                         * que tal cliente parou de digitar e nenhum status será exibido.
+                         */
+                        $('#msg').keyup(function (evt) {
+                            socket.emit('status', '')
+                        })                        
+                    } else {
+                        socket.emit('chat msg', $('#msg').val())
                     }
 
                     //Limpa o campo de texto
-                    $('#msg').val('');
-                    return false;
-                });
+                    $('#msg').val('')
+                    return false
+                })
 
                 /**
                  * Função que será chamada sempre que o servidor
@@ -58,47 +100,8 @@
                  * para todos os clientes.
                  */
                 socket.on('chat msg', function(msg){
-                    $('#messages').append($('<li>').text(msg));
-                });
-
-                /**
-                 * Função que será chamada sempre que o servidor
-                 * enviar de volta ao cliente uma mensagem do tipo "status".
-                 * Assim, todos os clientes saberão o status de um determinado usuário.
-                 * Por exemplo, quando um usuário estiver digitando,
-                 * todos os outros receberão uma mensagem de status indicando isto.
-                 */
-                socket.on('status', function(msg){
-                    $('#status').html(msg);
-                    console.log(msg);
-                });
-
-                /**
-                 * Função que será chamada sempre que o usuário
-                 * digitar uma tecla.
-                 * Ela então envia uma mensagem de status ao servidor,
-                 * indicando que o usuário está digitando.
-                 * O servidor receberá tal mensagem e fará broadcast dela,
-                 * ou seja, enviará para todos os outros clientes
-                 * para que eles saibam que um usuário está digitando.
-                 */
-                $('#msg').keypress(function(evt){
-                    if(nickname === ''){
-                        return;
-                    }
-
-                    socket.emit('status', nickname + ' está escrevendo...');
-                });
-
-                /**
-                 * Função que será chamada quando o usuário soltar uma tecla,
-                 * ou seja, parar de digitar. Ao fazer isso, o cliente
-                 * envia uma mensagem de status vazia. Isto indicará
-                 * que tal cliente parou de digitar e nenhum status será exibido.
-                 */
-                $('#msg').keyup(function(evt){
-                    socket.emit('status', '');
-                });
+                    $('#messages').append($('<li>').text(msg))
+                })
             })
         </script>
     </body>
