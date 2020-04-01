@@ -77,14 +77,14 @@ define a porta a ser usada (ou que define de outra maneira).
 No caso do nome do host é o mesmo processo.*/
 const porta = process.env.PORT || 8000
 
-/**HOST é uma variável de ambiente definida manualmente 
- * nas configurações da aplicação no heroku,
- * indicando o domínio que o heroku disponibiliza
- * para a aplicação.
+/**HEROKU_APP_NAME é uma variável de ambiente 
+ * criada automaticamente quando hospedamos a aplicaão no Heroku.
+ * Ela indica o nome da aplicação e a partir dela,
+ * conseguimos saber qual o domínio para acesso.
  * Se a variável não existir (pois estamos rodando a app localmente
  * ou em outro provedor), vai usar localhost como host.
  */
-const host = process.env.HOST || "http://localhost"
+const host = process.env.HEROKU_APP_NAME ? `https://${process.env.HEROKU_APP_NAME}.herokuapp.com` : "http://localhost"
 
 /*
  * Faz o servidor ficar escutando a porta indicada acima, aguardando requisições.
@@ -99,15 +99,14 @@ const host = process.env.HOST || "http://localhost"
 http.listen(porta, function(){
     //Se a porta for 80, não precisa exibir na URL pois é padrão
     const portaStr = porta === 80 ? '' :  ':' + porta
-    /*HEROKU é uma variável de ambiente definida manualmente 
-    nas configurações da aplicação quando hospedada no Heroku.
-    Com isto, a app pode saber se está rodando no heroku ou não.
+
+    /*
     O heroku não nos permite escolher a porta em que o servidor
     nodejs vai escutar. Ele escolhe uma porta aleatoriamente
     e armazena na variável de ambiente process.env.PORT.
     Apesar de ele usar uma porta diferente da 80,
-    acessamos a aplicação pela porta 80,
-    como em https://chatwss.herokuapp.com.
+    acessamos a aplicação pela porta 80 ou 443,
+    em http://chatwss.herokuapp.com ou https://chatwss.herokuapp.com.
     O heroku hospeda aplicações de diferentes clientes (desenvolvedores)
     em um mesmo servidor. No caso do nodejs, cada aplicação possui seu próprio
     servidor embutido. É diferente de aplicações como em PHP ou python onde 
@@ -128,7 +127,7 @@ http.listen(porta, function(){
     e assim, não exibimos a porta que está sendo internamente usada,
     pois para os usuários da app, a porta será 80.
      */
-    if (process.env.HEROKU)
+    if (process.env.HEROKU_APP_NAME)
         console.log('Servidor iniciado. Abra o navegador em ' + host)
     else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr)
 })
