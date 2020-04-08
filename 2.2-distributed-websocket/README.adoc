@@ -70,18 +70,21 @@ um balanceador de carga e a comunicação entre diferentes servidores usando Web
 Apesar disto, observe que é bastante trabalhoso implementar algo assim.
 
 Esta implementação serve apenas para efeitos didáticos e posusi alguns problemas.
-O balanceador de carga está fazendo mais do que deveria, ele: 
+Como o balanceador de carga armazena em memória o endereço dos servidores,
+se o balanceador parar, podemos iniciar outro, mas este novo não
+terá os endereços dos servidores atualmente ativos.
+Assim, precisaríamos guardar tais endereços em algum lugar,
+como em um arquivo de configuração ou em um servidor de cache
+(armazenamento temporário) como https://redis.io[Redis].
 
-- redireciona cada cliente para um servidor existente;
-- mas também é responsável por intermediar a troca de mensagens privadas entre clientes do mesmo servidor ou de servidores distintos.
+Por fim, se um servidor parar, todos os usuários serão desconectados.
+A aplicação poderia detectar tal problema e redirecionar o usuário
+para o novo servidor, mas nada garantiria que os mesmos usuários conectados
+anteriormente no servidor que parou, estariam todos de volta no novo servidor.
+Neste caso, além de precisarmos de um servidor de cache para guardar temporariamente
+os dados dos usuários conectados, precisaríamos de um balanceador de carga mais inteligente,
+que reencaminhasse todos os usuários do servidor que falhou para um novo servidor.
 
-Isto vai fazer com que o balanceador fique mais tempo ocupado, 
-podendo prejudicar a agilidade no redirecionamento das conexões dos clientes, afetando a escalabilidade do sistema.
-Em uma aplicação real, o ideal seria ter um servidor específico apenas para encaminhar as mensagens privadas.
-No entanto, sendo este um projeto apenas de exemplo, e para não tornar a implementação mais extensa,
-optou-se por incluir tal responsabilidade no balanceador. 
-
-Se desejar ver uma aplicação mais realista que utiliza o https://redis.io[Redis] (um servidor de cache) para armazenar dados temporários compartilhados
-entre as diversas aplicações em execução, acesse https://medium.com/containers-on-aws/scaling-a-realtime-chat-app-on-aws-using-socket-io-redis-and-aws-fargate-4ed63fb1b681[este link].
+Se desejar ver uma aplicação utilizando o https://redis.io[Redis] para armazenar dados temporários compartilhados entre os servidores em execução, acesse https://medium.com/containers-on-aws/scaling-a-realtime-chat-app-on-aws-using-socket-io-redis-and-aws-fargate-4ed63fb1b681[este link].
 Um vídeo mostrando o desenvolvimento de tal aplicação está disponível link:https://youtu.be/IEvLkwdFgnU[aqui].
 Há legendas em inglês, que você pode traduzir para o português no YouTube.

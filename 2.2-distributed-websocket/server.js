@@ -16,62 +16,25 @@ const http = require('http').Server(app);
 const serverSocket = require('socket.io')(http);
 
 /**
- * Verifica se foram passadas o endereço e porta para iniciar o servidor por parâmetro de linha de comando
+ * Verifica se foram passados o endereço e porta para iniciar o servidor por parâmetro de linha de comando
  */
 const hasParameters = process.argv.length == 4;
 
 const host  = hasParameters ? process.argv[2] : "localhost";
 const port = hasParameters ? process.argv[3] : util.randomPort();
-const server = `${host}:${port}`;
+const serverAddress = `http://${host}:${port}`;
 
 /**
- * Conecta no WebSocket do balanceador de carga para permitir que ele intermedie a comunicação
- * entre servidores quando um usuário enviar uma mensagem para outro em um servidor diferente.
+ * Conecta no WebSocket do balanceador de carga para que este
+ * saiba quais são os servidores disponíveis.
  */
 const loadBalancerSocket = require('socket.io-client')(util.loadBalancerAddress);
 
 /** 
  * Informa ao balanceador o endereço deste servidor para que o balanceador 
- * possa se comunicar com ele via WebSockets e encaminhar mensagens.
+ * possa direcionar clientes para um dos servidores disponíveis.
  */
-loadBalancerSocket.emit('serverAddress', server);
-
-/**
- * Objeto contendo os sockets dos usuários conectados neste servidor, que permite 
- * ao servidor entregar mensagens privadas.
- * Este objeto contém um atributo cujo nome será o ID do socket do usuário,
- * para cada usuário conectado.
- * 
- * Se tivermos 2 sockets com os IDs S9834ASDFLJ e LS0291LAS,
- * então teremos dois atributos cujos nomes são estes IDs e o valor de cada um
- * é o socket do usuário respectivo.
-*/
-const users = {};
-
-loadBalancerSocket.on('chat msg', function(msg){
-    const destinationLogin = util.getDestinationLogin(msg);
-    console.log(`Msg privada recebida do balanceador para encaminhamento para ${destinationLogin}: ${msg}`);
-    if (sendMsgToUser(destinationLogin, msg))
-        console.log(`Msg privada enviada para usuário ${destinationLogin}: ${msg}`);
-    else console.log(`Usuário de destino ${destinationLogin} não encontrado`);
-});
-
-/**
- * Encontra usuário de destino para entregar uma mensagem privada.
- * 
- * @param {String} destinationUser login do usuário de destino
- * @param {String} msg mensagem a ser enviada
- */
-function sendMsgToUser(destinationUser, msg){
-    for (const id in users) {
-        if (destinationUser == users[id].login) {
-            users[id].emit('chat msg', msg);
-            return true;
-        }
-    }
-
-    return false;
-}
+loadBalancerSocket.emit('serverAddress', serverAddress);
 
 http.listen(port, function(){
     console.log(`Servidor iniciado. Abra a aplicação pelo endereço do balanceador de carga em ${util.loadBalancerAddress}`);
@@ -82,25 +45,8 @@ app.get('/', function (request, response) {
 });
 
 serverSocket.on('connect', function(socket){
-    console.log(`\nServidor ${server} -> Usuário conectado:   ${socket.id}`);
-
-    /* 
-    Para cada usuário que conecta, adiciona um novo atributo
-    no objeto users, cujo nome será o id do socket e o valor
-    o próprio socket do usuário. 
-    Tal objeto é utilizado para encontrar um usuário pelo login
-    quando alguém desejar enviar uma mensagem privada a ele.
-    */
-    users[socket.id] = socket;
-
     socket.on('disconnect', function(){
-        console.log(`Servidor ${server} -> Usuário desconectou: ${socket.id}`);
-        /*
-        Quando o usuário desconecta, remove o atributo que representa
-        o socket do usuário do objeto users. Assim, se alguém tentar mandar
-        mensagem para tal usuário, o sistema pode informar que o usuário não foi localizado
-        */
-        delete users[socket.id];
+        console.log(`Servidor ${serverAddress} -> Usuário desconectou: ${socket.login}`);
     });
         
     /* 
@@ -109,20 +55,16 @@ serverSocket.on('connect', function(socket){
     Tal dado é guardado como um atributo "login" dentro do próprio socket do usuário. 
     */
     socket.on('login', function (nickname) {
-        socket.login = nickname + '@' + server
+        socket.login = nickname 
         const msg = `Usuário logado:      ${socket.login}`;
-        console.log(`Servidor ${server} -> ${msg}`);
-        serverSocket.emit('login', socket.login);
+        console.log(`Servidor ${serverAddress} -> ${msg}`);
     });
 
     socket.on('chat msg', function(msg){
-        console.log(`Servidor ${server} -> Mensagem do usuário  ${socket.id}: ${msg}`);
-        if (util.isPrivateMsg(msg)){
-            loadBalancerSocket.emit('chat msg', msg);
-            console.log(`Enviando mensagem privada pro balanceador de carga encaminhar: ${msg}`);
-        }
+        msg = `${socket.login}: ${msg}`
+        console.log(`Servidor ${serverAddress} -> Mensagem do usuário ${msg}`);
         //Envia mensagem pra todos os usuários conectados no servidor, exceto o emissor
-        else socket.broadcast.emit('chat msg', msg);
+        socket.broadcast.emit('chat msg', msg);
     });
 
     socket.on('status', function(msg){

@@ -10,7 +10,7 @@
             <div id="login"></div>
             <ul id='messages'></ul>
             <form>
-                <input type='text' id='msg' autocomplete="off" placeholder="Digite seu login"/> 
+                <input type='text' id='msg' autocomplete="off" autofocus placeholder="Digite seu login"/> 
                 <button id='button1' type='submit'>Logar</button>
             </form>
             <div id='status'></div>
@@ -31,7 +31,7 @@
                     if(nickname === ''){
                         nickname = $('#msg').val();
                         socket.emit('login', nickname);
-                        $('#login').html(`<b>Conectado como ${nickname}</b>. <br/>Para enviar mensagem privada para um usuário em um determinado servidor, digite <b>login@endereco_servidor_destino:porta mensagem</b>`);
+                        $('#login').html(`<b>Conectado como ${nickname}</b>.`);
                     } else {
                         const msg = $('#msg').val();
                         socket.emit('chat msg', msg);
