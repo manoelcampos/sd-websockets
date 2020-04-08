@@ -3,7 +3,11 @@ console.log('\tIniciar um servidor em uma porta aleatória: npm start')
 console.log('\tIniciar um servidor em uma porta específica: npm start ip_ou_domínio porta\n')
 
 const util = require('./util.js');
-const app = require('express')();
+const express = require('express');
+
+const app = express();
+app.use(express.static("public"));
+
 const http = require('http').Server(app);
 
 /**

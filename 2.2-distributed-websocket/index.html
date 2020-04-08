@@ -2,17 +2,19 @@
 <html>
     <head>
         <title>Chat</title>
+        <link rel="stylesheet" href="estilo.css">
     </head>
     <body>
-        <div id="servidor"></div>
-        <div id="login"></div>
-        <ul id='messages'></ul>
-        <form>
-            <label id='label1' for"msg">Digite seu login</label>
-            <input type='text' id='msg' autocomplete="off" /> 
-            <button id='button1' type='submit'>Entrar</button>
-        </form>
-        <div id='status'></div>
+        <header>
+            <div id="servidor"></div>
+            <div id="login"></div>
+            <ul id='messages'></ul>
+            <form>
+                <input type='text' id='msg' autocomplete="off" placeholder="Digite seu login"/> 
+                <button id='button1' type='submit'>Logar</button>
+            </form>
+            <div id='status'></div>
+        </header>
 
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
@@ -23,7 +25,7 @@
                 let nickname = '';
 
                 $('form').submit(function(){
-                    $('#label1').html('Digite uma mensagem');
+                    $('#msg').prop('placeholder', 'Digite uma mensagem');
                     $('#button1').html('Enviar');
                     
                     if(nickname === ''){

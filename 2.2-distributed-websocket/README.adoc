@@ -13,7 +13,10 @@ endif::[]
 = Aplicação Distribuída de Mensagens Instantâneas com Balanceador de Carga utilizando WebSocket com Node.js (link:https://kinolien.github.io/gitzip/?download=/manoelcampos/sd-websockets/tree/master/2.2-distributed-websocket[zip])
 
 Esta é uma versão distribuída do chat com WebSockets e Node.js link:../2.1-websocket-chat-nodejs[apresentado anteriormente].
-A aplicação possui um balanceador de carga que decide qual servidor vai atender o usuário. 
+A aplicação implementa um balanceador de carga que decide qual servidor vai atender o usuário. 
+Existem inúmeras formas de adicionar um balanceador de carga a uma aplicação.
+Por exemplo, você pode utilizar um servidor web como o https://www.nginx.com[nginx], com bibliotecas
+como http://expressjs.com[express.js] e https://www.npmjs.com/package/loadbalancer[LoadBalancer.js], ou até outras mais avançadas como https://socketcluster.io[SocketCluster].
 
 Você pode iniciar múltiplos servidores na mesma máquina, onde cada um vai executar em uma porta selecionada aleatoriamente. 
 Ao iniciar cada servidor, ele conecta via WebSockets no balanceador de carga e informa seu endereço.
@@ -49,10 +52,10 @@ Depois, pode-se abrir quantos terminais desejar e em cada terminal iniciar uma i
 
 [source, bash]
 ----
-npm start
+node server.js
 ----
 
-Cada servidor vai iniciar em localhost numa porta escolhida aleatoriamente.
+Cada servidor vai iniciar em localhost mas em uma porta escolhida aleatoriamente.
 Como a aplicação deve ser acessada sempre pelo balanceador de carga, o usuário não precisa saber o endereço dos servidores.
 
 === Cliente

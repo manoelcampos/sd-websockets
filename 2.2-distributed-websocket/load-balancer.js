@@ -58,10 +58,11 @@ express.get('/', function (request, response) {
 
         //Obtém o nome de um atributo, que representa o endereço de um servidor
         let serverAddress = fields[serverIndex];
+
         //Obtém o valor de tal atributo, que representa o socket do servidor
         const serverSocket = serverSockets[serverAddress];
         serverAddress = 'http://' + serverAddress;
-        console.log(`Servers: ${fields.length} Selected server: ${serverIndex} serverAddress: ${serverAddress}`);
+        console.log(`Servidores disponíveis: ${fields.length} Servidor selecionado: ${serverIndex} serverAddress: ${serverAddress}`);
 
         if (util.hostAvailable(serverAddress)) {
             console.log(`Redirecionando usuário para servidor ${serverIndex} em ${serverAddress}`)
@@ -85,7 +86,7 @@ express.get('/', function (request, response) {
     response.status(503).send("<b>Não há nenhum servidor disponível. Por favor tente novamente mais tarde.</b>");
 });
 
-/** Monitora quando um servidor conectar no balanceador de carga via WebSocket */
+/** Monitora quando um servidor conectar ao balanceador de carga via WebSocket */
 balancerSocket.on('connect', function (socket) {
     /*
     Quando um servidor conecta ao balanceador de carga, ele informa seu endereço 
