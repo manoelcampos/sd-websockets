@@ -49,21 +49,15 @@ serverSocket.on('connect', function(socket){
         console.log(`Servidor ${serverAddress} -> Usuário desconectou: ${socket.login}`);
     });
         
-    /* 
-    Quando um usuário conecta pela interface web, ele envia uma mensagem do tipo "login"
-    com seu nickname (seu nome de login) para o servidor.
-    Tal dado é guardado como um atributo "login" dentro do próprio socket do usuário. 
-    */
     socket.on('login', function (nickname) {
         socket.login = nickname 
         const msg = `Usuário logado:      ${socket.login}`;
         console.log(`Servidor ${serverAddress} -> ${msg}`);
     });
 
-    socket.on('chat msg', function(msg){
+    socket.on('chat msg', function (msg) {
         msg = `${socket.login}: ${msg}`
         console.log(`Servidor ${serverAddress} -> Mensagem do usuário ${msg}`);
-        //Envia mensagem pra todos os usuários conectados no servidor, exceto o emissor
         socket.broadcast.emit('chat msg', msg);
     });
 

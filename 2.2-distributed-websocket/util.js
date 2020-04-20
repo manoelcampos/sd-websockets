@@ -15,15 +15,16 @@ function randomPort(){
 
 /**
  * Verifica se um servidor está disponível,
- * enviando uma requisição HTTP a  ele
+ * enviando uma requisição HTTP a ele
  * @param {String} url endereço completo do servidor que deseja-se verificar, como http://localhost:8001
  * @return true se o servidor respondeu, false caso contrário
  */
-function hostAvailable(url) {
+function isHostAvailable(url) {
     const req = new XMLHttpRequest();
     req.open('HEAD', url, false);
     req.send();
     return req.status == 200;
 }
 
-module.exports = { randomPort, hostAvailable, loadBalancerPort, loadBalancerAddress };
+
+module.exports = { randomPort, isHostAvailable, loadBalancerPort, loadBalancerAddress };

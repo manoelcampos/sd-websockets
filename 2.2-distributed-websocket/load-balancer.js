@@ -51,7 +51,7 @@ express.get('/', function (request, response) {
         console.log(`Servidores disponíveis: ${servers.length}`);
         console.log(`Servidor selecionado: ${serverIndex} endereço: ${socket.serverAddress}`);
 
-        if (util.hostAvailable(socket.serverAddress)) {
+        if (util.isHostAvailable(socket.serverAddress)) {
             console.log(`Redirecionando usuário para servidor ${serverIndex} em ${socket.serverAddress}`)
             response.status(307).redirect(socket.serverAddress);
             return;
@@ -106,5 +106,4 @@ balancerSocket.on('connect', function (socket) {
         console.log(`Servidor ${socket.serverAddress} ficou off-line`);
         delete servers[socket.serverAddress];
     });
-
 });
