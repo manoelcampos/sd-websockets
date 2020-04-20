@@ -21,6 +21,8 @@ Cada servidor iniciado em uma mesma máquina vai utilizar uma porta diferente.
 A aplicação então não deve ser acessada pelo endereço de cada servidor, mas pelo endereço do balanceador de carga.
 Os usuários conectados em um mesmo servidor podem mandar mensagens entre eles.
 
+Uma apresentação sobre balanceamento de carga está disponível link:load-balancer.pptx[aqui].
+
 == Informações Adicionais
 
 Informações sobre instalação, estrutura, dependências e outras devem ser consultadas no link:../2.1-websocket-chat-nodejs[projeto anterior].
