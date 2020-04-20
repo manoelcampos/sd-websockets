@@ -10,81 +10,57 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-= Aplicação Distribuída de Mensagens Instantâneas com Balanceador de Carga utilizando WebSocket com Node.js (link:https://kinolien.github.io/gitzip/?download=/manoelcampos/sd-websockets/tree/master/2.2-distributed-websocket[zip])
+= Aplicação Distribuída de Mensagens Instantâneas com WebSocket e Node.js (link:https://kinolien.github.io/gitzip/?download=/manoelcampos/sd-websockets/tree/master/2.2-distributed-websocket[zip])
 
-Esta é uma versão distribuída do chat com WebSockets e Node.js link:../2.1-websocket-chat-nodejs[apresentado anteriormente].
-A aplicação implementa um balanceador de carga que decide qual servidor vai atender o usuário. 
+Esta é uma versão distribuída do chat com WebSockets e Node.js link:../2.1-websocket-chat-nodejs[apresentado anteriormente], onde você pode iniciar várias instâncias do servidor.
+É então utilizado um balanceador de carga que decide qual servidor vai atender o usuário. 
 Existem inúmeras formas de adicionar um balanceador de carga a uma aplicação.
-Por exemplo, você pode utilizar um servidor web como o https://www.nginx.com[nginx], com bibliotecas
-como http://expressjs.com[express.js] e https://www.npmjs.com/package/loadbalancer[LoadBalancer.js], ou até outras mais avançadas como https://socketcluster.io[SocketCluster].
+Aqui foi utilizada a biblioteca https://github.com/SocketCluster/loadbalancer[LoadBalancer.js].
 
-Você pode iniciar múltiplos servidores na mesma máquina, onde cada um vai executar em uma porta selecionada aleatoriamente. 
-Ao iniciar cada servidor, ele conecta via WebSockets no balanceador de carga e informa seu endereço.
-O balanceador então guarda a lista de endereços dos servidores ativos.
-Quando um servidor é fechado, ele é removida da lista do balanceador.
-
-Os usuários conectados em um mesmo servidor podem mandar mensagens em broadcast entre eles.
-Se um usuário desejar mandar uma mensagem privada para um usuário de um mesmo ou outro servidor, pode digitar `login@endereco_servidor_destino:porta mensagem`. 
-Neste caso, o balanceador de carga (que conhece o endereço de todos os servidores online) irá:
-
-- verificar que a mensagem é privada;
-- localizar o servidor de destino;
-- e encaminhar a mensagem a ele. 
-
-Tal servidor então procura o usuário de destino e entrega a mensagem.
+Cada servidor iniciado em uma mesma máquina vai utilizar uma porta diferente. 
+A aplicação então não deve ser acessada pelo endereço de cada servidor, mas pelo endereço do balanceador de carga.
+Os usuários conectados em um mesmo servidor podem mandar mensagens entre eles.
 
 == Informações Adicionais
 
 Informações sobre instalação, estrutura, dependências e outras devem ser consultadas no link:../2.1-websocket-chat-nodejs[projeto anterior].
 
+== Instalando e configurando o Balanceador de Carga
+
+O módulo https://github.com/SocketCluster/loadbalancer[LoadBalancer.js] (LB) deve ser instalado como um módulo global, que poderá ser acessado a partir de qualquer lugar.
+Para instalá-lo, basta executar um dos comandos abaixo:
+
+- `npm i -g loadbalancer` 
+- ou `make install`
+
+O arquivo [loadbalancer.json](loadbalancer.json) contém as configurações para o LB,
+indicando a porta que ele vai escutar (neste caso 8000) e os endereços
+dos servidores da aplicação. Foram configurados 2 servidores nos endereços http://localhost:8001 e http://localhost:8002. Tais servidores devem ser iniciados por você.
+
 == Executando a Aplicação
 
-=== Balanceador de Carga e Servidores
+=== Load Balancer (LB)
 
-Podemos iniciar o balanceador de carga em http://localhost:8000 com o comando abaixo:
+Podemos iniciar o LB de carga em http://localhost:8000 com um dos comandos abaixo:
 
-[source,bash]
-----
-node load-balancer.js
-----
+- `loadbalancer start --config loadbalancer.json`
+- ou `make start`
 
-Depois, pode-se abrir quantos terminais desejar e em cada terminal iniciar uma instância diferente do servidor da aplicação com o comando: 
+Para parar o LB, use um dos comandos abaixo:
 
-[source, bash]
-----
-node server.js
-----
+- `loadbalancer stop`
+- ou `make stop`
 
-Cada servidor vai iniciar em localhost mas em uma porta escolhida aleatoriamente.
+=== Servidores da Aplicação
+
+Depois de iniciar o LB, pode-se abrir um terminal para cada servidor configurado em [loadbalancer.json](loadbalancer.json). Como temos 2 servidores configurados, precisamos de 2 terminais. Em cada terminal deve ser iniciado um servidor da aplicação em uma porta diferente, como especificado no arquivo acima. Para isto, basta executar cada um dos comandos a seguir em um terminal diferente:
+
+- Terminal 1: `node start 8001`
+- Terminal 2: `node start 8002`
+
 Como a aplicação deve ser acessada sempre pelo balanceador de carga, o usuário não precisa saber o endereço dos servidores.
 
 === Cliente
 
 Para abrir a interface web da aplicação, basta acessar o endereço do balanceador de carga em http://localhost:8000
 que ele vai direcionar a requisição para um servidor disponível.
-
-== AVISO
-
-Este é apenas um projeto de exemplo, mostrando que não é complexo implementar
-um balanceador de carga e a comunicação entre diferentes servidores usando WebSockets.
-Apesar disto, observe que é bastante trabalhoso implementar algo assim.
-
-Esta implementação serve apenas para efeitos didáticos e posusi alguns problemas.
-Como o balanceador de carga armazena em memória o endereço dos servidores,
-se o balanceador parar, podemos iniciar outro, mas este novo não
-terá os endereços dos servidores atualmente ativos.
-Assim, precisaríamos guardar tais endereços em algum lugar,
-como em um arquivo de configuração ou em um servidor de cache
-(armazenamento temporário) como https://redis.io[Redis].
-
-Por fim, se um servidor parar, todos os usuários serão desconectados.
-A aplicação poderia detectar tal problema e redirecionar o usuário
-para o novo servidor, mas nada garantiria que os mesmos usuários conectados
-anteriormente no servidor que parou, estariam todos de volta no novo servidor.
-Neste caso, além de precisarmos de um servidor de cache para guardar temporariamente
-os dados dos usuários conectados, precisaríamos de um balanceador de carga mais inteligente,
-que reencaminhasse todos os usuários do servidor que falhou para um novo servidor.
-
-Se desejar ver uma aplicação utilizando o https://redis.io[Redis] para armazenar dados temporários compartilhados entre os servidores em execução, acesse https://medium.com/containers-on-aws/scaling-a-realtime-chat-app-on-aws-using-socket-io-redis-and-aws-fargate-4ed63fb1b681[este link].
-Um vídeo mostrando o desenvolvimento de tal aplicação está disponível link:https://youtu.be/IEvLkwdFgnU[aqui].
-Há legendas em inglês, que você pode traduzir para o português no YouTube.

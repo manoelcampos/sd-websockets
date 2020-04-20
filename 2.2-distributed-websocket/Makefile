@@ -23,6 +23,7 @@ macos:
 install:
 	@# Instala as dependências da aplicação servidora (as bibliotecas utilizadas)
 	npm i
+	npm i -g loadbalancer
 
 clean:
 	rm -rf node_modules
@@ -31,3 +32,11 @@ clean:
 remove:
 	@# Caso esteja ocorrendo erro na instalação, tente fazer make remove para desinstalar o nodejs e npm
 	sudo apt-get remove nodejs npm && sudo apt-get autoremove
+
+start:
+	@# Inicia o balanceador de carga
+	loadbalancer start --config loadbalancer.json
+
+stop:
+	@# Para o balanceador de carga
+	loadbalancer stop
