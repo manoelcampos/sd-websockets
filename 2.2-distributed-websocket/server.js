@@ -26,10 +26,9 @@ const porta = portaEspecifica ? process.argv[2] : process.env.PORT || portaPadra
 const host = process.env.HEROKU_APP_NAME ? `https://${process.env.HEROKU_APP_NAME}.herokuapp.com` : "http://localhost"
 
 http.listen(porta, () => {
-    const portaStr = porta === 80 ? '' :  ':' + porta
     if (process.env.HEROKU_APP_NAME)
         console.log('Servidor iniciado. Abra o navegador em ' + host)
-    else console.log('Servidor iniciado. Abra o navegador em ' + host + portaStr)
+    else console.log('Servidor iniciado. Abra o navegador no endereço do balanceador de carga')
 })
 
 app.get('/', (requisicao, resposta) => {
