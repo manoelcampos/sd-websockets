@@ -66,3 +66,9 @@ Como a aplicação deve ser acessada sempre pelo balanceador de carga, o usuári
 
 Para abrir a interface web da aplicação, basta acessar o endereço do balanceador de carga em http://localhost:8000
 que ele vai direcionar a requisição para um servidor disponível.
+
+== Referências
+
+- https://socket.io/docs/using-multiple-nodes/
+- https://socket.io/docs/client-api/#With-websocket-transport-only
+- https://dev.to/moz5691/websocket-vs-long-polling-http-412f
