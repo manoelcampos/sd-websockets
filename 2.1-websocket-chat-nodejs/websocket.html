@@ -33,8 +33,9 @@
     <form onsubmit="return enviarMsg();">
         <ul id="messages"></ul>
 
-        Digite uma mensagem <input lenght="50" id="msg"> <button type="submit">Enviar</button>
-        
+        <label id="labelMsg" for="msg">Digite seu login</label>
+        <input lenght="50" id="msg"> <button type="submit">Enviar</button>
+
         <p><div id="status"></div></p>
     </form>
 
@@ -49,6 +50,7 @@
         - https://socket.io/docs/internals/#engine-io
         */
         let socket = new WebSocket("ws://localhost:8000/socket.io/?EIO=3&transport=websocket");
+        let login = "";
 
         socket.onerror = function(){
             $("#status").html("Erro ao tentar comunicação com o servidor. Verifique se o servidor está em execução!");
@@ -113,13 +115,18 @@
          *         Com isto, evitamos que a página seja recarregada.
         */
         function enviarMsg(){
-            let textoMsg = $("#msg").val();
+            const textoMsg = $("#msg").val();
 
             /*
             Envia uma mensagem no formato esperado pelo servidor socket.io,
             ou seja 42["tipo-da-mensagem","texto-da-mensagem"] 
             */
-            socket.send("42" + JSON.stringify(["chat msg", textoMsg]));  
+            if(login === "") {
+                login = textoMsg;
+                socket.send("42" + JSON.stringify(["login", login]));  
+                document.getElementById("labelMsg").innerHTML = "Digite uma mensagem";
+            }
+            else socket.send("42" + JSON.stringify(["chat msg", textoMsg]));  
             $("#msg").val("");
 
             return false;
