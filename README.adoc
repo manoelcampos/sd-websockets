@@ -12,6 +12,8 @@ endif::[]
 
 = Aplicações de Exemplo utilizando o Protocolo WebSockets do HTML 5
 
+IMPORTANT: Playlist: https://www.youtube.com/playlist?list=PLyo0RUAM69UvnqUq5SFeVahS_YTUVgq4v[💬🔌 Aplicação de Chat com Node.js e WebSocket (socket.io)]
+
 Este repositório link:websocket.pptx[apresenta o protocolo de WebSockets] e fornece alguns projetos de backend e frontend.
 
 - link:2.1-websocket-chat-nodejs[Aplicação de Chat utilizando Node.js]
