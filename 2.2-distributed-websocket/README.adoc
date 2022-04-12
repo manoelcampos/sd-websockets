@@ -35,7 +35,7 @@ Para instalá-lo, basta executar um dos comandos abaixo:
 - `npm i -g loadbalancer` 
 - ou `make install`
 
-O arquivo [loadbalancer.json](loadbalancer.json) contém as configurações para o LB,
+O arquivo link:loadbalancer.json[] contém as configurações para o LB,
 indicando a porta que ele vai escutar (neste caso 8000) e os endereços
 dos servidores da aplicação. Foram configurados 2 servidores nos endereços http://localhost:8001 e http://localhost:8002. Tais servidores devem ser iniciados por você.
 
@@ -43,19 +43,19 @@ dos servidores da aplicação. Foram configurados 2 servidores nos endereços ht
 
 === Load Balancer (LB)
 
-Podemos iniciar o LB de carga em http://localhost:8000 com um dos comandos abaixo:
+Podemos iniciar o LB em http://localhost:8000 com um dos comandos abaixo:
 
 - `loadbalancer start --config loadbalancer.json`
 - ou `make start`
 
-Para parar o LB, use um dos comandos abaixo:
+Para interromper o LB, use um dos comandos abaixo:
 
 - `loadbalancer stop`
 - ou `make stop`
 
 === Servidores da Aplicação
 
-Depois de iniciar o LB, pode-se abrir um terminal para cada servidor configurado em [loadbalancer.json](loadbalancer.json). Como temos 2 servidores configurados, precisamos de 2 terminais. Em cada terminal deve ser iniciado um servidor da aplicação em uma porta diferente, como especificado no arquivo acima. Para isto, basta executar cada um dos comandos a seguir em um terminal diferente:
+Depois de iniciar o LB, pode-se abrir um terminal para cada servidor configurado em link:loadbalancer.json[]. Como temos 2 servidores configurados, precisamos de 2 terminais. Em cada terminal deve ser iniciado um servidor da aplicação em uma porta diferente, como especificado no arquivo acima. Para isto, basta executar cada um dos comandos a seguir em um terminal diferente:
 
 - Terminal 1: `node start 8001`
 - Terminal 2: `node start 8002`
@@ -69,6 +69,5 @@ que ele vai direcionar a requisição para um servidor disponível.
 
 == Referências
 
-- https://socket.io/docs/using-multiple-nodes/
-- https://socket.io/docs/client-api/#With-websocket-transport-only
+- https://socket.io/docs/v3/using-multiple-nodes/
 - https://dev.to/moz5691/websocket-vs-long-polling-http-412f
