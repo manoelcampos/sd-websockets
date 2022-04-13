@@ -57,8 +57,8 @@ Para interromper o LB, use um dos comandos abaixo:
 
 Depois de iniciar o LB, pode-se abrir um terminal para cada servidor configurado em link:loadbalancer.json[]. Como temos 2 servidores configurados, precisamos de 2 terminais. Em cada terminal deve ser iniciado um servidor da aplicação em uma porta diferente, como especificado no arquivo acima. Para isto, basta executar cada um dos comandos a seguir em um terminal diferente:
 
-- Terminal 1: `node start 8001`
-- Terminal 2: `node start 8002`
+- Terminal 1: `npm start 8001`
+- Terminal 2: `npm start 8002`
 
 Como a aplicação deve ser acessada sempre pelo balanceador de carga, o usuário não precisa saber o endereço dos servidores.
 
