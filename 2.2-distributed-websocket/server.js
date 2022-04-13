@@ -13,8 +13,7 @@ app.use(express.static("public"))
 // https://nodejs.org/api/http.html
 const http = require('http').Server(app)
 
-const serverSocket = require('socket.io')(http)
-serverSocket.set('transports', ['websocket']);
+const serverSocket = require('socket.io')(http, {transports: ['websocket']})
 
 /**
  * Verifica se foi passada a porta para iniciar o servidor por parâmetro de linha de comando
