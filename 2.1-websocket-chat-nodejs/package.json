@@ -1,5 +1,5 @@
 {
-  "name": "05-chat-nodejs-socket-io",
+  "name": "chat-nodejs-socket-io",
   "version": "1.0.0",
   "description": "Web chat utilizando nodejs. Com Node.js podemos usar JavaScript no lado servidor e no cliente. A aplicação utiliza WebSockets com a biblioteca http://socket.io para implementar o chat.",
   "main": "server.js",
@@ -11,7 +11,6 @@
     "xmlhttprequest-ssl": ">=1.6.1"
   },
   "scripts": {
-    "comment": "O comando start é usado para padronizar a inicialização da aplicação, bastando executar npm start que o servidor será iniciado (caso não esteja usando o nodemon, que não requer parâmetros). Além de facilitar a inicialização, tal comando é necessário quando a app é hospedada em provedores de nuvem como o heroku.com, que vai tentar iniciar a app usando npm start, e pra isso, o comando start precisa ser definido como abaixo.",
     "start": "node server.js"
   },
   "keywords": [
