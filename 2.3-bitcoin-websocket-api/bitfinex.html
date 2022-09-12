@@ -8,12 +8,18 @@
 </head>
 <body>
     <h3>
-    Aplicação que usa a API do serviço <a href="https://docs.bitfinex.com/v2/docs">bitfinex</a> para obter a cotação do bitcoin (e outras criptomoedas) em tempo real.
-    Ela envia um requisição para assinar um canal por onde receberá notificações sempre que o preço da criptomoeda solicitada mudar.
-    Tal aplicação utiliza apenas os recursos de WebSockets do HTML5 disponibilizados pelo navegador.
-    Assim, ela não depende de uma aplicação servidora para obter a cotação da moeda.
-    A aplicação servidora existente não tem relação alguma com esta página HTML.
+    Aplicação cliente que usa a API do serviço bitfinex
     </h3>
+
+    <p>Usa a <a href="https://docs.bitfinex.com/reference/ws-public-ticker">API</a> do bitfinex para obter a cotação do bitcoin (e outras criptomoedas) em tempo real.
+        Ela envia um requisição para assinar um canal por onde receberá notificações sempre que o preço 
+        da criptomoeda solicitada mudar.
+        Tal aplicação utiliza apenas os recursos de WebSockets do HTML5 disponibilizados pelo navegador.
+        Assim, ela não depende de uma aplicação servidora para obter a cotação da moeda.
+        O projeto Node.js existente é uma aplicação servidora independente,
+        mostrando como fazer a mesma coisa do lado do servidor e obter
+        cotação em background.
+    </p>
 
     <h4>
         <div id="message"></div>

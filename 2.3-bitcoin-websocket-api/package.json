@@ -1,5 +1,5 @@
 {
-  "name": "bitfinex-websocket-api",
+  "name": "bitfinex-websocket-backend",
   "version": "1.0.0",
   "description": "Acessa cotações de criptomoedas usando a API de WebSockets da bitfinex.com",
   "main": "bitfinex.js",

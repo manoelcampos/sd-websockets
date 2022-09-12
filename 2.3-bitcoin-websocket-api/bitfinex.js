@@ -1,11 +1,18 @@
 /**
- * Aplicação que usa a API do serviço bitfinex
- * para obter a cotação do BitCoin (e outroas criptomoedas).
- * É enviada requisição para assinar um canal por onde
+ * Aplicação backend que usa a API do serviço bitfinex
+ * para obter a cotação do Bitcoin (e outras criptomoedas)
+ * em background.
+ * Basta iniciar o servidor com npm start
+ * 
+ * Ao iniciar, o backend envia requisição para assinar um canal por onde
  * a aplicação receberá notificações sempre que o preço
  * da criptomoeda solicitada mudar.
  * 
- * https://docs.bitfinex.com/v2/reference#ws-public-ticker
+ * A aplicação não usa o arquivo bitfinex.html,
+ * que é apenas um exemplo de como fazer o mesmo mas
+ * do lado do cliente com JavaScript puro.
+ * 
+ * Referência: https://docs.bitfinex.com/reference/ws-public-ticker
  */
 
 //Biblioteca cliente de WebSocket
@@ -35,23 +42,21 @@ let channelId = 0
  * informação dela.
 */
 ws.onmessage = (msg) => {
-  //Se o conteúdo da mensagem for String, tal comando converte para JSON,
-  //ou seja, para um objeto javascript que poderemos acessar os campos facilmente.
+  /* Se o conteúdo da mensagem for String, tal comando converte para JSON,
+  ou seja, para um objeto javascript que poderemos acessar os campos facilmente. */
   msg.data = JSON.parse(msg.data)
 
-  /*Se o tipo do evento for 'subscribed', que a assinatura no canal para receber 
+  /* Se o tipo do evento for 'subscribed', que a assinatura no canal para receber 
   cotação de uma determinada criptomoeda foi aceita*/
   if (msg.data['event'] === 'subscribed'){
     //Obtém o id do canal da nossa assinatura para podermos exibir mensagens recebidas apenas deste canal
     channelId = msg.data.chanId
     console.log('Registrada assinatura de cotação de ' + subscriptionMsg.from + ' para ' + subscriptionMsg.to)
-  } else if (msg.data[0] === channelId){
-    /*Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, 
+  } else if (msg.data[0] === channelId && msg.data[1][6] !== undefined){
+    /* Se a mensagem recebida for do canal ao qual fomos registrados anteriormente, 
     então imprime os dados da mensagem.
-    O conteúdo da mensagem é descrito no link no início deste arquivo*/
-    if (msg.data[1][6] !== undefined){
-      console.log(subscriptionMsg.from + ' = ' + subscriptionMsg.to + ' ' + msg.data[1][6])
-    }
+    O conteúdo da mensagem é descrito no link no início deste arquivo. */
+    console.log(subscriptionMsg.from + ' = ' + subscriptionMsg.to + ' ' + msg.data[1][6])
   }
 }
 
