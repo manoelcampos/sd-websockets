@@ -61,4 +61,4 @@ ws.onmessage = (msg) => {
 }
 
 //Envia solicitação de assinatura para ficar recebendo a cotação de uma criptomoeda em tempo real
-ws.on('open', () => ws.send(JSON.stringify(subscriptionMsg)))
+ws.onopen = () => ws.send(JSON.stringify(subscriptionMsg))
