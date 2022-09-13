@@ -12,7 +12,7 @@ endif::[]
 
 = Cotação de Criptomoedas usando WebSockets e API da bitfinex (link:https://kinolien.github.io/gitzip/?download=/manoelcampos/sd-websockets/tree/master/2.3-bitcoin-websocket-api[zip])
 
-Aplicação que usa a API do serviço https://docs.bitfinex.com/v2/docs[bitfinex] para obter a cotação do BitCoin (e outroas criptomoedas)
+Aplicação que usa a API do serviço https://docs.bitfinex.com/reference/ws-public-ticker[bitfinex] para obter a cotação do BitCoin (e outroas criptomoedas)
 em tempo real. A aplicação envia um requisição para assinar um canal por onde receberá notificações sempre que o preço da criptomoeda solicitada mudar.
 
 == Estrutura do Projeto
