@@ -23,8 +23,6 @@ http.listen(PORTA, () => {
 
 app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
 
-serverSocket.on('connect', recebeConexaoUsuario)
-
 function recebeConexaoUsuario(socket) {
     socket.on('login', (nickname) => registraLoginUsuario(socket, nickname))
     socket.on('disconnect', () => console.log('Cliente desconectado: ' + socket.nickname))
@@ -47,3 +45,5 @@ function registraLoginUsuario(socket, nickname) {
     console.log(msg)
     serverSocket.emit('chat msg', msg)
 }
+
+serverSocket.on('connect', recebeConexaoUsuario)
