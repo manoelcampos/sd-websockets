@@ -17,8 +17,7 @@ IMPORTANT: Playlist: https://www.youtube.com/playlist?list=PLyo0RUAM69UvnqUq5SFe
 Este repositório link:websocket.pptx[apresenta o protocolo de WebSockets] e fornece alguns projetos de backend e frontend.
 
 - link:2.1-websocket-chat-nodejs[Aplicação de Chat utilizando Node.js]
-- link:2.2-distributed-websocket[Aplicação Distribuída de Chat utilizando Node.js]
-- link:2.3-bitcoin-websocket-api[Cotação de criptomoedas em tempo real]
+- link:2.2-bitcoin-websocket-api[Cotação de criptomoedas em tempo real]
 
 == Material Complementar
 
