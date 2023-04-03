@@ -136,5 +136,3 @@ Obviamente, seu projeto deve estar corretamente configurado, usando ferramentas 
 de build como Maven e npm (este último que estamos usando aqui).
 
 Como esta aplicação é desenvolvida utilizando Node.js, o Heroku identifica isso pela existência do arquivo package.json e assim criar todo um ambiente de execução de aplicações Node pra gente.
-
-A aplicação está hospedada em https://chatwss.herokuapp.com.
