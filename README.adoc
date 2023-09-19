@@ -14,7 +14,8 @@ endif::[]
 
 IMPORTANT: Playlist: https://www.youtube.com/playlist?list=PLyo0RUAM69UvnqUq5SFeVahS_YTUVgq4v[💬🔌 Aplicação de Chat com Node.js e WebSocket (socket.io)]
 
-Este repositório link:websocket.pptx[apresenta o protocolo de WebSockets] e fornece alguns projetos de backend e frontend.
+Mostra o funcionamento do protocolo de WebSocket e fornece alguns projetos de backend e frontend.
+Veja https://www.icloud.com/keynote/068SIijoBFiKtaSREZaf7yv7Q#websocket[apresentação aqui].
 
 - link:2.1-websocket-chat-nodejs[Aplicação de Chat utilizando Node.js]
 - link:2.2-bitcoin-websocket-api[Cotação de criptomoedas em tempo real]
