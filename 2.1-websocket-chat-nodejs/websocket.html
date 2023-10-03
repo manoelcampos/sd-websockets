@@ -49,11 +49,27 @@
         - https://socket.io/docs/internals/
         - https://socket.io/docs/internals/#engine-io
         */
-        let socket = new WebSocket("ws://localhost:8080/socket.io/?EIO=3&transport=websocket");
+        const socket = new WebSocket("ws://localhost:8080/socket.io/?EIO=4&transport=websocket");
         let login = "";
 
-        socket.onerror = function(){
+        /**
+         * Quando a conexão com o servidor socket.io é estabelecida, com a versão 4 do socket.io
+         * no backend, é preciso enviar uma mensagem de confirmação de conexão contendo "40":
+         * 4 => engine.io packet type MESSAGE
+         * 0 => socket.io packet type CONNECT
+         * 
+         * https://github.com/socketio/socket.io/discussions/4299
+         */
+        socket.onopen = () => {
+            socket.send("40")
+        };
+
+        socket.onerror = () => {
             $("#status").html("Erro ao tentar comunicação com o servidor. Verifique se o servidor está em execução!");
+        };
+
+        socket.onclose = () => {
+            $("#status").html("Conexão com o servidor fechada!");
         };
 
         /**
@@ -68,11 +84,12 @@
          *        fazer a comunicação com um servidor que usa socket.io
          *        requer um trabalho adicional para interpretar as mensagens recebidas.
         */
-        socket.onmessage = function (evt) {
+        socket.onmessage = (evt) => {
             /*Se a mensagem não iniciar com 42, é porque representa
             uma mensagem de controle do protocolo, não uma mensagem
             enviada pelo usuário ou notificação de status (enviado para indicar
-            que o usuário está digitando)*/
+            que o usuário está digitando).
+            */
             if (evt.data.substring(0, 2) !== "42") {
                 return;
             }
