@@ -11,7 +11,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-= Aplicação de Mensagens Instantâneas utilizando WebSocket com Node.js (link:https://kinolien.github.io/gitzip/?download=/manoelcampos/sd-websockets/tree/master/2.1-websocket-chat-nodejs[zip])
+= Aplicação de Mensagens Instantâneas utilizando WebSocket com Node.js
 
 NOTE: Acesse uma Playlist de vídeos mostrando todo o processo de desenvolvimento da aplicação https://www.youtube.com/watch?v=hEPAr4MPQjU&list=PLyo0RUAM69UvnqUq5SFeVahS_YTUVgq4v[aqui].
 
