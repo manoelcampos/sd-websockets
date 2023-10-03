@@ -10,9 +10,9 @@ const http = require('http').Server(app)
 // https://socket.io
 const serverSocket = require('socket.io')(http)
 
-const PORTA = process.env.PORT || 8000
+const PORTA = process.env.PORT || 8080
 
-const host = process.env.HEROKU_APP_NAME ? `https://${process.env.HEROKU_APP_NAME}.herokuapp.com` : "http://localhost"
+const host = "http://localhost"
 
 http.listen(PORTA, () => {
     const portaStr = PORTA === 80 ? '' :  ':' + PORTA
